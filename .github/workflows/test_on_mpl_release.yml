@@ -31,6 +31,7 @@ jobs:
       # Runs the test script; the script will do all the version checks and
       # environment updates, if required
       - name: Run test script
+        if: ${{ always() }}  # also run if artifact download failed
         run: ./timple/tests/test_new_mpl_releases.sh
         shell: bash
 

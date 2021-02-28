@@ -17,7 +17,7 @@ jobs:
   # Check for new matplotlib releases and run tests if a new release is available
   test-on-mpl-release:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
       - name: Cache version from last run
@@ -140,7 +140,7 @@ jobs:
           # libraries cannot be loaded at runtime, so an actual import is a
           # better check).
           python3 -m pip install --upgrade \
-            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 \
+            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 \
             wxPython &&
             python -c 'import wx' &&
             echo 'wxPython is available' ||

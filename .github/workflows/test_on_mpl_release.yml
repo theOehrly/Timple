@@ -2,6 +2,11 @@
 
 name: Test Matplotlib Release
 
+env:
+  NO_AT_BRIDGE: 1  # Necessary for GTK3 interactive test.
+  OPENBLAS_NUM_THREADS: 1
+  PYTHONFAULTHANDLER: 1
+
 # Controls when the action will run. 
 on:
   # Allows you to run this workflow manually from the Actions tab
@@ -14,30 +19,143 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Cache version from last run
+        uses: actions/cache@v2
+        with:
+          path: mpl_version_last_run.txt
+          key: version-cache  # -${{ hashFiles('*.txt') }}
+
+      - name: Version Check
+        id: version
+        run: |
+          # Find out what's the latest version number of matplotlib and
+          # create a url for downloading the sources for that version.
+          # Read last runs version from a cached file if available. Set to 'unknown' otherwise.
+          # Set these as this steps outputs so they can be reused later.
+
+          CURRENT_MPL_VERSION=$(curl -s https://api.github.com/repos/matplotlib/matplotlib/releases/latest \
+          | grep "tag_name" \
+          | awk '{print substr($2, 3, length($2)-4)}')
+
+          MPL_LOCATION=$"https://github.com/matplotlib/matplotlib/archive/v$CURRENT_MPL_VERSION.tar.gz"
+
+          if test -f "mpl_version_last_run.txt"
+          then
+            LAST_MPL_VERSION=$(<mpl_version_last_run.txt)
+          else
+            LAST_MPL_VERSION=$"unknown"
+          fi
+
+
+          echo "The current matplotlib version is $CURRENT_MPL_VERSION"
+          echo "URL for sources: $MPL_LOCATION"
+          echo "The matplotlib version on the last run was $LAST_MPL_VERSION"
+
+          echo ::set-output name=current::$CURRENT_MPL_VERSION
+          echo ::set-output name=location::$MPL_LOCATION
+          echo ::set-output name=last::$LAST_MPL_VERSION
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         uses: actions/checkout@v2
-      
-      # Get mpl version reference file from last run
-      # The test script uses this to compare if a new version of mpl has been released since
-      # the last run
-      - name: Download version file
-        uses: actions/download-artifact@v2
-        with:
-          name: last-mpl-version
 
-      # Runs the test script; the script will do all the version checks and
-      # environment updates, if required
-      - name: Run test script
-        if: ${{ always() }}  # also run if artifact download failed
-        run: ./timple/tests/test_new_mpl_releases.sh
-        shell: bash
+      - name: Install OS dependencies
+        run: |
+            apt-get update -y
+            DEBIAN_FRONTEND=noninteractive apt-get install -y \
+              ccache \
+              cm-super \
+              dvipng \
+              ffmpeg \
+              gdb \
+              gir1.2-gtk-3.0 \
+              graphviz \
+              inkscape \
+              lcov \
+              libcairo2 \
+              libcairo2-dev \
+              libffi-dev \
+              libgeos-dev \
+              libgirepository1.0-dev \
+              libsdl2-2.0-0 \
+              libxkbcommon-x11-0 \
+              libxcb-icccm4 \
+              libxcb-image0 \
+              libxcb-keysyms1 \
+              libxcb-randr0 \
+              libxcb-render-util0 \
+              libxcb-xinerama0 \
+              lmodern \
+              fonts-freefont-otf \
+              texlive-pictures \
+              pkg-config \
+              qtbase5-dev \
+              texlive-fonts-recommended \
+              texlive-latex-base \
+              texlive-latex-extra \
+              texlive-latex-recommended \
+              texlive-luatex \
+              texlive-xetex \
+              ttf-wqy-zenhei
 
-      # Upload the potentially updated mpl version reference file
-      - name: Upload version file
-        uses: actions/upload-artifact@v1
+      - name: Cache pip
+        uses: actions/cache@v2
         with:
-          name: last-mpl-version
-          path: last_mpl_version.txt
+          path: ~/.cache/pip
+          key: pip-cache-${{ hashFiles('requirements/*/*.txt') }}
+          restore-keys: |
+            pip-cache
+
+      - name: Download latest released sources for matplotlib
+        run: |
+          curl -L -o matplotlib.tar.gz ${{ steps.version.outputs.location }}
+          tar -xf matplotlib.tar.gz
+          rm matplotlib.tar.gz
+
+      - name: Install Python dependencies
+        run: |
+          # Upgrade pip and setuptools and wheel to get as clean an install as
+          # possible.
+          python3 -m pip install --upgrade pip setuptools wheel
+
+          # Install dependencies from PyPI.
+          python3 -m pip install --upgrade \
+            cycler kiwisolver numpy pillow pyparsing python-dateutil \
+            -r matplotlib-${{ steps.version.outputs.current }}/requirements/testing/travis_all.txt
+
+          # Install optional dependencies from PyPI.
+          # Sphinx is needed to run sphinxext tests
+          python3 -mpip install --upgrade sphinx
+
+          # GUI toolkits are pip-installable only for some versions of Python
+          # so don't fail if we can't install them.  Make it easier to check
+          # whether the install was successful by trying to import the toolkit
+          # (sometimes, the install appears to be successful but shared
+          # libraries cannot be loaded at runtime, so an actual import is a
+          # better check).
+          python3 -m pip install --upgrade \
+            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 \
+            wxPython &&
+            python -c 'import wx' &&
+            echo 'wxPython is available' ||
+            echo 'wxPython is not available'
+
+      - name: Install matplotlib from sources
+        run: |
+          cd matplotlib-${{ steps.version.outputs.current }}
+          python3 -m pip install --no-deps -e .
+
+      - name: Run Timple Tests
+        run: |
+          python3 -m pip install -r requirements-dev.txt  # ensure package requirements
+          xvfb-run -a python3 -m pytest -v timple/tests
+
+      - name: Update mpl version cache file
+        run: |
+          echo ${{ steps.version.outputs.current }}" > mpl_version_last_run.txt

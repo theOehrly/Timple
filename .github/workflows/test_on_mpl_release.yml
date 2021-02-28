@@ -154,7 +154,7 @@ jobs:
       - name: Run Timple Tests
         run: |
           python3 -m pip install -r requirements-dev.txt  # ensure package requirements
-          xvfb-run -a python3 -m pytest -v timple/tests
+          xvfb-run -a python3 -m pytest -raR
 
       - name: Update mpl version cache file
         run: |

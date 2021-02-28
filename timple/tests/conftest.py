@@ -1,4 +1,5 @@
 import pytest
+import importlib
 
 
 @pytest.fixture
@@ -12,3 +13,15 @@ def pd():
     except ImportError:
         pass
     return pd
+
+
+@pytest.fixture
+def mpl():
+    """Fixture to import matplotlib"""
+    import matplotlib as mpl
+    from matplotlib import pyplot, dates, units
+    importlib.reload(mpl)  # ensure clean import for each test
+    importlib.reload(pyplot)
+    importlib.reload(dates)
+    importlib.reload(units)
+    return mpl

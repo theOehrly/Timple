@@ -1,18 +1,27 @@
 import timple
-from timple import timedelta as tmpldelta
+from .. import timedelta as tmpldelta
 
 import datetime
 
 import numpy as np
 import pytest
 
-import matplotlib as mpl
-import matplotlib.dates as mdates
-import matplotlib.pyplot as plt
 
+def _timplify(func):
+    import matplotlib as mpl
+    from matplotlib import pyplot, dates, units
+    import importlib
+    importlib.reload(mpl)  # ensure clean import for each test
+    importlib.reload(pyplot)
+    importlib.reload(dates)
+    importlib.reload(units)
+    tmpl = timple.Timple(mpl)
+    tmpl.enable()
 
-tmpl = timple.Timple(mpl)
-tmpl.enable()
+    def run():
+        func(mpl)
+
+    return run
 
 
 def test_strftimedelta():
@@ -31,10 +40,10 @@ def test_strftimedelta():
     for td, fmt, expected in cases:
         assert tmpldelta.strftimedelta(td, fmt) == expected
 
-
-def test_timdelta_formatter():
+@_timplify
+def test_timdelta_formatter(mpl):
     def _create_timedelta_locator(td1, td2, fmt, kwargs):
-        fig, ax = plt.subplots()
+        fig, ax = mpl.pyplot.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.TimedeltaFormatter(fmt, **kwargs)
@@ -114,9 +123,10 @@ def test_timedelta_formatter_usetex():
     verify(formatter.get_offset())
 
 
-def test_concise_timedelta_formatter():
+@_timplify
+def test_concise_timedelta_formatter(mpl):
     def _create_concise_timedelta_locator(td1, td2):
-        fig, ax = plt.subplots()
+        fig, ax = mpl.pyplot.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.ConciseTimedeltaFormatter(locator)
@@ -163,9 +173,10 @@ def test_concise_timedelta_formatter():
         assert offset_string == expected_offset
 
 
-def test_auto_timedelta_formatter():
+@_timplify
+def test_auto_timedelta_formatter(mpl):
     def _create_auto_timedelta_locator(td1, td2):
-        fig, ax = plt.subplots()
+        fig, ax = mpl.pyplot.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.AutoTimedeltaFormatter(locator)
@@ -282,7 +293,8 @@ def test_date2num_pandas_nat(pd):
         np.testing.assert_equal(tmpldelta.timedelta2num(x), expected)
 
 
-def test_auto_timedelta_locator():
+@_timplify
+def test_auto_timedelta_locator(mpl):
     def _create_auto_timedelta_locator(delta1, delta2):
         locator = tmpldelta.AutoTimedeltaLocator()
         locator.create_dummy_axis()
@@ -331,7 +343,7 @@ def test_auto_timedelta_locator():
     for t_delta, expected in results:
         dt2 = dt1 + t_delta
         locator = _create_auto_timedelta_locator(dt1, dt2)
-        assert list(map(str, mdates.num2timedelta(locator()))) == expected
+        assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
 
 
 def test_fixed_timedelta_locator_allowed_base():
@@ -343,11 +355,12 @@ def test_fixed_timedelta_locator_allowed_base():
         tmpldelta.FixedTimedeltaLocator('lightyear', 1)
 
 
-def test_fixed_timedelta_locator():
+@_timplify
+def test_fixed_timedelta_locator(mpl):
     results = [
         ('days', 0.5, 0.5, ['12:00:00', '1 day, 0:00:00',
                             '1 day, 12:00:00', '2 days, 0:00:00']),
-        ('minutes', 20, 1 / mdates.HOURS_PER_DAY,
+        ('minutes', 20, 1 / mpl.dates.HOURS_PER_DAY,
          ['23:40:00', '1 day, 0:00:00',
           '1 day, 0:20:00', '1 day, 0:40:00',
           '1 day, 1:00:00', '1 day, 1:20:00'])
@@ -358,10 +371,11 @@ def test_fixed_timedelta_locator():
         locator = tmpldelta.FixedTimedeltaLocator(base, interval)
         locator.create_dummy_axis()
         locator.set_view_interval(*tmpldelta.timedelta2num([dt0, dt1]))
-        assert list(map(str, mdates.num2timedelta(locator()))) == expected
+        assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
 
 
-def test_auto_modified_intervald():
+@_timplify
+def test_auto_modified_intervald(mpl):
     locator = tmpldelta.AutoTimedeltaLocator()
     locator.intervald['hours'] = [3]
     locator.create_dummy_axis()
@@ -377,7 +391,7 @@ def test_auto_modified_intervald():
                 '2 days, 18:00:00', '2 days, 21:00:00', '3 days, 0:00:00',
                 '3 days, 3:00:00']
     # auto would usually be using longer intervals for 2 days
-    assert list(map(str, mdates.num2timedelta(locator()))) == expected
+    assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
 
 
 # new

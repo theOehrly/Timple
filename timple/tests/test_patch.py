@@ -1,55 +1,47 @@
 import timple
 
-import importlib
 import pytest
 
-
-import matplotlib as mpl
-from matplotlib import units as munits
-from matplotlib import dates as mdates
 import datetime
 import numpy as np
 
 
-def test_enable_disable():
+def test_enable_disable(mpl):
     # test enabling and disabing Timple to ensure it works as expected and
     # can be removed again
-    importlib.reload(mpl)  # ensure clean state
     tmpl = timple.Timple(mpl)
-    td = np.timedelta64(1, 'D')
 
-    assert munits._is_natively_supported(td)
-    assert np.timedelta64 not in munits.registry
-    assert datetime.timedelta not in munits.registry
+    td = np.timedelta64(1, 'D')
+    # not yet enabled
+    assert mpl.units._is_natively_supported(td)
+    assert np.timedelta64 not in mpl.units.registry
+    assert datetime.timedelta not in mpl.units.registry
 
     tmpl.enable()
-    assert not munits._is_natively_supported(td)
-    assert np.timedelta64 in munits.registry
-    assert datetime.timedelta in munits.registry
+    assert not mpl.units._is_natively_supported(td)
+    assert np.timedelta64 in mpl.units.registry
+    assert datetime.timedelta in mpl.units.registry
 
     tmpl.disable()
-    assert munits._is_natively_supported(td)
-    assert np.timedelta64 not in munits.registry
-    assert datetime.timedelta not in munits.registry
+    assert mpl.units._is_natively_supported(td)
+    assert np.timedelta64 not in mpl.units.registry
+    assert datetime.timedelta not in mpl.units.registry
 
 
-def test_date2num_pandas_nat(pd):
-    importlib.reload(mpl)  # ensure clean state
+def test_date2num_pandas_nat(pd, mpl):
     tmpl = timple.Timple(mpl)
 
     test_case = [pd.Timestamp('1970-01-03'), pd.NaT]
     expected = [2.0, np.nan]
 
     with pytest.raises(ValueError):
-        np.testing.assert_equal(mdates.date2num(test_case), expected)
+        np.testing.assert_equal(mpl.dates.date2num(test_case), expected)
 
     tmpl.enable(pd_nat_dates_support=True)
-    np.testing.assert_equal(mdates.date2num(test_case), expected)
+    np.testing.assert_equal(mpl.dates.date2num(test_case), expected)
 
 
-def test_mpl_default_functionality():
-    # run part of matplotlibs own tests
-    importlib.reload(mpl)  # ensure clean state
+def test_mpl_default_functionality(mpl):
     tmpl = timple.Timple(mpl)
     tmpl.enable()
 

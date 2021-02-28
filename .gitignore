@@ -1,3 +1,6 @@
 __pycache__/
 .git/
 .pytest_cache/
+result_images/
+.actrc
+act/

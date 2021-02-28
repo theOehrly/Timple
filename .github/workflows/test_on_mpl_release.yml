@@ -67,8 +67,8 @@ jobs:
 
       - name: Install OS dependencies
         run: |
-            apt-get update -y
-            DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            sudo apt-get update -yy
+            sudo apt-get install -yy \
               ccache \
               cm-super \
               dvipng \

@@ -1,30 +1,16 @@
-import timple
-from .. import timedelta as tmpldelta
-
 import datetime
-
 import numpy as np
 import pytest
 
-
-def _timplify(func):
-    import matplotlib as mpl
-    from matplotlib import pyplot, dates, units
-    import importlib
-    importlib.reload(mpl)  # ensure clean import for each test
-    importlib.reload(pyplot)
-    importlib.reload(dates)
-    importlib.reload(units)
-    tmpl = timple.Timple(mpl)
-    tmpl.enable()
-
-    def run():
-        func(mpl)
-
-    return run
+# NOTE:
+# imports for timple and matplotlib are automatically cleaned up before
+# EACH individual test. Therefore, imports for timple and matplotlib
+# need to be done inside a test and on a per test basis
 
 
 def test_strftimedelta():
+    from .. import timedelta as tmpldelta
+
     cases = [
         (datetime.timedelta(days=1), "%d %day, %h:%m", "1 day, 00:00"),
         (datetime.timedelta(days=2.25), "%d %day, %h:%m", "2 days, 06:00"),
@@ -40,10 +26,13 @@ def test_strftimedelta():
     for td, fmt, expected in cases:
         assert tmpldelta.strftimedelta(td, fmt) == expected
 
-@_timplify
-def test_timdelta_formatter(mpl):
+
+def test_timdelta_formatter():
+    from matplotlib import pyplot as plt
+    from .. import timedelta as tmpldelta
+
     def _create_timedelta_locator(td1, td2, fmt, kwargs):
-        fig, ax = mpl.pyplot.subplots()
+        fig, ax = plt.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.TimedeltaFormatter(fmt, **kwargs)
@@ -97,6 +86,8 @@ def test_timdelta_formatter(mpl):
 
 
 def test_timedelta_formatter_usetex():
+    from .. import timedelta as tmpldelta
+
     formatter = tmpldelta.TimedeltaFormatter("%h:%m", offset_on='days',
                                           offset_fmt="%d %day", usetex=True)
     values = [datetime.timedelta(days=0, hours=12),
@@ -123,10 +114,12 @@ def test_timedelta_formatter_usetex():
     verify(formatter.get_offset())
 
 
-@_timplify
-def test_concise_timedelta_formatter(mpl):
+def test_concise_timedelta_formatter():
+    from matplotlib import pyplot as plt
+    from .. import timedelta as tmpldelta
+
     def _create_concise_timedelta_locator(td1, td2):
-        fig, ax = mpl.pyplot.subplots()
+        fig, ax = plt.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.ConciseTimedeltaFormatter(locator)
@@ -173,10 +166,12 @@ def test_concise_timedelta_formatter(mpl):
         assert offset_string == expected_offset
 
 
-@_timplify
-def test_auto_timedelta_formatter(mpl):
+def test_auto_timedelta_formatter():
+    from matplotlib import pyplot as plt
+    from .. import timedelta as tmpldelta
+
     def _create_auto_timedelta_locator(td1, td2):
-        fig, ax = mpl.pyplot.subplots()
+        fig, ax = plt.subplots()
 
         locator = tmpldelta.AutoTimedeltaLocator()
         formatter = tmpldelta.AutoTimedeltaFormatter(locator)
@@ -227,40 +222,9 @@ def test_auto_timedelta_formatter(mpl):
         assert strings == expected
 
 
-# TODO remove
-# def test_pd_timedelta2np(pd):
-#     pd_td = [pd.Timedelta(seconds=1), pd.NaT]
-#     td = np.array([np.timedelta64(1, 's'),
-#                    np.timedelta64('nat')])
-#     converted = tmpldelta.pd_timedelta2np(pd_td)
-#     np.testing.assert_array_equal(td, converted)
-#
-#
-# def test_timedelta2num():
-#     results = [(1, datetime.timedelta(days=1)),
-#                (0.25, datetime.timedelta(hours=6)),
-#                (3 / 86400 / 1000, datetime.timedelta(milliseconds=3)),
-#                (np.nan, np.timedelta64('nat')),
-#                ([1, 1.5], [datetime.timedelta(days=1),
-#                            datetime.timedelta(days=1.5)])]
-#     for x, tdelta in results:
-#         np.testing.assert_equal(x, tmpldelta.timedelta2num(tdelta))
-#
-#
-# def test_timedelta2num_pandas(pd):
-#     results = [(2, {'days': 2}),
-#                (0.25, {'hours': 6}),
-#                (3 / 86400 / 1000, {'milliseconds': 3})]
-#     for x, td_kwargs in results:
-#         pd_td = pd.Timedelta(**td_kwargs)
-#         np.testing.assert_equal(x, tmpldelta.timedelta2num(pd_td))
-#
-#
-# def test_timedelta2num_pandas_nat(pd):
-#     assert np.isnan(tmpldelta.timedelta2num(pd.NaT))
+def test_timedelta2num(pd):
+    from .. import timedelta as tmpldelta
 
-
-def test_date2num_timedelta(pd):
     cases = ((1, datetime.timedelta(days=1)),
              (0.25, datetime.timedelta(hours=6)),
              (3 / 86400 / 1000, datetime.timedelta(milliseconds=3)),
@@ -284,7 +248,9 @@ def test_date2num_timedelta(pd):
         np.testing.assert_equal(tmpldelta.timedelta2num(tdelta), expected)
 
 
-def test_date2num_pandas_nat(pd):
+def test_timedelta2num_pandas_nat(pd):
+    from .. import timedelta as tmpldelta
+
     cases = (
         (pd.NaT, np.nan),
         ([pd.NaT, pd.Timedelta(days=1)], [np.nan, 1.0])
@@ -293,8 +259,10 @@ def test_date2num_pandas_nat(pd):
         np.testing.assert_equal(tmpldelta.timedelta2num(x), expected)
 
 
-@_timplify
-def test_auto_timedelta_locator(mpl):
+def test_auto_timedelta_locator():
+    import matplotlib.dates as mdates
+    from .. import timedelta as tmpldelta
+
     def _create_auto_timedelta_locator(delta1, delta2):
         locator = tmpldelta.AutoTimedeltaLocator()
         locator.create_dummy_axis()
@@ -343,10 +311,12 @@ def test_auto_timedelta_locator(mpl):
     for t_delta, expected in results:
         dt2 = dt1 + t_delta
         locator = _create_auto_timedelta_locator(dt1, dt2)
-        assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
+        assert list(map(str, mdates.num2timedelta(locator()))) == expected
 
 
 def test_fixed_timedelta_locator_allowed_base():
+    from .. import timedelta as tmpldelta
+
     for base in tmpldelta.TimedeltaLocator().base_units:
         # should not raise
         tmpldelta.FixedTimedeltaLocator(base, 1)
@@ -355,12 +325,14 @@ def test_fixed_timedelta_locator_allowed_base():
         tmpldelta.FixedTimedeltaLocator('lightyear', 1)
 
 
-@_timplify
-def test_fixed_timedelta_locator(mpl):
+def test_fixed_timedelta_locator():
+    import matplotlib.dates as mdates
+    from .. import timedelta as tmpldelta
+
     results = [
         ('days', 0.5, 0.5, ['12:00:00', '1 day, 0:00:00',
                             '1 day, 12:00:00', '2 days, 0:00:00']),
-        ('minutes', 20, 1 / mpl.dates.HOURS_PER_DAY,
+        ('minutes', 20, 1 / mdates.HOURS_PER_DAY,
          ['23:40:00', '1 day, 0:00:00',
           '1 day, 0:20:00', '1 day, 0:40:00',
           '1 day, 1:00:00', '1 day, 1:20:00'])
@@ -371,11 +343,13 @@ def test_fixed_timedelta_locator(mpl):
         locator = tmpldelta.FixedTimedeltaLocator(base, interval)
         locator.create_dummy_axis()
         locator.set_view_interval(*tmpldelta.timedelta2num([dt0, dt1]))
-        assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
+        assert list(map(str, mdates.num2timedelta(locator()))) == expected
 
 
-@_timplify
-def test_auto_modified_intervald(mpl):
+def test_auto_modified_intervald():
+    import matplotlib.dates as mdates
+    from .. import timedelta as tmpldelta
+
     locator = tmpldelta.AutoTimedeltaLocator()
     locator.intervald['hours'] = [3]
     locator.create_dummy_axis()
@@ -391,204 +365,4 @@ def test_auto_modified_intervald(mpl):
                 '2 days, 18:00:00', '2 days, 21:00:00', '3 days, 0:00:00',
                 '3 days, 3:00:00']
     # auto would usually be using longer intervals for 2 days
-    assert list(map(str, mpl.dates.num2timedelta(locator()))) == expected
-
-
-# new
-#
-# def test_concise_timedelta_formatter():
-#     def _create_concise_timedelta_locator(td1, td2):
-#         fig, ax = plt.subplots()
-#
-#         locator = tmpldelta.AutoTimedeltaLocator()
-#         formatter = tmpldelta.ConciseTimedeltaFormatter(locator)
-#         ax.yaxis.set_major_locator(locator)
-#         ax.yaxis.set_major_formatter(formatter)
-#         ax.set_ylim(td1, td2)
-#         fig.canvas.draw()
-#         sts = [st.get_text() for st in ax.get_yticklabels()]
-#         offset_text = ax.yaxis.get_offset_text().get_text()
-#         return sts, offset_text
-#
-#     td1 = datetime.timedelta(days=100, hours=3, minutes=40)
-#     results = ([datetime.timedelta(days=141),
-#                 ['100 days', '120 days', '140 days', '160 days', '180 days',
-#                  '200 days', '220 days', '240 days', '260 days'],
-#                 ""
-#                 ],
-#                [datetime.timedelta(hours=40),
-#                 ['4:00', '8:00', '12:00', '16:00', '20:00',
-#                  '24:00', '28:00', '32:00', '36:00', '40:00'],
-#                 "100 days"
-#                 ],
-#                [datetime.timedelta(minutes=30),
-#                 ['3:42', '3:45', '3:48', '3:51', '3:54',
-#                  '3:57', '4:00', '4:03', '4:06', '4:09'],
-#                 "100 days"
-#                 ],
-#                [datetime.timedelta(seconds=30),
-#                 ['40:00.0', '40:03.0', '40:06.0', '40:09.0',
-#                  '40:12.0', '40:15.0', '40:18.0', '40:21.0',
-#                  '40:24.0', '40:27.0', '40:30.0'],
-#                 "100 days, 03:00"
-#                 ],
-#                [datetime.timedelta(microseconds=600),
-#                 ['59.999900', '60.000000', '60.000100', '60.000200',
-#                  '60.000300', '60.000400', '60.000500', '60.000600',
-#                  '60.000700'], "100 days, 03:39"
-#                 ],
-#                )
-#     for t_delta, expected, expected_offset in results:
-#         td2 = td1 + t_delta
-#         strings, offset_string = _create_concise_timedelta_locator(td1, td2)
-#         assert strings == expected
-#         assert offset_string == expected_offset
-#
-#
-# def test_date2num_timedelta(pd):
-#     cases = ((1, datetime.timedelta(days=1)),
-#              (0.25, datetime.timedelta(hours=6)),
-#              (3 / 86400 / 1000, datetime.timedelta(milliseconds=3)),
-#              ([1, 1.5], [datetime.timedelta(days=1),
-#                          datetime.timedelta(days=1.5)]),
-#              (np.nan, np.timedelta64('nat')),
-#              (2, np.timedelta64(2, 'D')),
-#              (0.25, np.timedelta64(6, 'h')),
-#              (3 / 86400 / 1000, np.timedelta64(3, 'ms')),
-#              ([1, 2], [np.timedelta64(1, 'D'),
-#                        np.timedelta64(2, 'D')]),
-#              (2, pd.Timedelta(days=2)),
-#              (0.25, pd.Timedelta(hours=6)),
-#              (3 / 86400 / 1000, pd.Timedelta(milliseconds=3)),
-#              ([1, 1.5], [pd.Timedelta(days=1),
-#                          pd.Timedelta(days=1.5)]),
-#              ([], [])  # test
-#              )
-#
-#     for expected, tdelta in cases:
-#         np.testing.assert_equal(mdates.date2num(tdelta), expected)
-#
-#
-# def test_date2num_pandas_nat(pd):
-#     cases = (
-#         (pd.NaT, np.nan),
-#         ([pd.NaT, pd.Timedelta(days=1)], [np.nan, 1.0]),
-#         ([pd.Timestamp('1970-01-03'), pd.NaT], [2.0, np.nan])
-#     )
-#     for x, expected in cases:
-#         np.testing.assert_equal(mdates.date2num(x), expected)
-#
-#
-# def test_auto_timedelta_locator():
-#     def _create_auto_timedelta_locator(delta1, delta2):
-#         locator = tmpldelta.AutoTimedeltaLocator()
-#         locator.create_dummy_axis()
-#         locator.set_view_interval(mdates.date2num(delta1),
-#                                   mdates.date2num(delta2))
-#         return locator
-#
-#     dt1 = datetime.timedelta(days=100)
-#     results = ([datetime.timedelta(days=141),
-#                 ['100 days, 0:00:00', '120 days, 0:00:00', '140 days, 0:00:00',
-#                  '160 days, 0:00:00', '180 days, 0:00:00', '200 days, 0:00:00',
-#                  '220 days, 0:00:00', '240 days, 0:00:00', '260 days, 0:00:00']
-#                 ],
-#                [datetime.timedelta(hours=40),
-#                 ['100 days, 0:00:00', '100 days, 4:00:00',
-#                  '100 days, 8:00:00', '100 days, 12:00:00',
-#                  '100 days, 16:00:00', '100 days, 20:00:00',
-#                  '101 days, 0:00:00', '101 days, 4:00:00',
-#                  '101 days, 8:00:00', '101 days, 12:00:00',
-#                  '101 days, 16:00:00']
-#                 ],
-#                [datetime.timedelta(minutes=20),
-#                 ['100 days, 0:00:00', '100 days, 0:02:00', '100 days, 0:04:00',
-#                  '100 days, 0:06:00', '100 days, 0:08:00', '100 days, 0:10:00',
-#                  '100 days, 0:12:00', '100 days, 0:14:00', '100 days, 0:16:00',
-#                  '100 days, 0:18:00', '100 days, 0:20:00']
-#                 ],
-#                [datetime.timedelta(seconds=40),
-#                 ['100 days, 0:00:00', '100 days, 0:00:05', '100 days, 0:00:10',
-#                  '100 days, 0:00:15', '100 days, 0:00:20', '100 days, 0:00:25',
-#                  '100 days, 0:00:30', '100 days, 0:00:35', '100 days, 0:00:40']
-#                 ],
-#                [datetime.timedelta(microseconds=1500),
-#                 ['99 days, 23:59:59.999500', '100 days, 0:00:00',
-#                  '100 days, 0:00:00.000500', '100 days, 0:00:00.001000',
-#                  '100 days, 0:00:00.001500', '100 days, 0:00:00.002000']
-#                 ])
-#
-#     for t_delta, expected in results:
-#         dt2 = dt1 + t_delta
-#         locator = _create_auto_timedelta_locator(dt1, dt2)
-#         assert list(map(str, mdates.num2timedelta(locator()))) == expected
-#
-#
-# def test_timedelta_locators_fixed():
-#     dt0 = datetime.timedelta(days=0)
-#     results = [
-#         [tmpldelta.DayLocatorTimedelta,
-#          {'interval': 25},
-#          datetime.timedelta(days=137),
-#          ['0:00:00', '25 days, 0:00:00', '50 days, 0:00:00',
-#           '75 days, 0:00:00', '100 days, 0:00:00',
-#           '125 days, 0:00:00', '150 days, 0:00:00']],
-#         [mdates.HourLocator,
-#          {'byhour': [2, 14]},
-#          datetime.timedelta(days=3),
-#          ['2:00:00', '14:00:00',
-#           '1 day, 2:00:00', '1 day, 14:00:00',
-#           '2 days, 2:00:00', '2 days, 14:00:00']],
-#         [mdates.MinuteLocator,
-#          {'byminute': [0, 20, 40]},
-#          datetime.timedelta(hours=2),
-#          ['0:00:00', '0:20:00', '0:40:00',
-#           '1:00:00', '1:20:00', '1:40:00', '2:00:00']],
-#         [mdates.SecondLocator,
-#          {'bysecond': [0, 15, 30, 45]},
-#          datetime.timedelta(minutes=1),
-#          ['0:00:00', '0:00:15', '0:00:30',
-#           '0:00:45', '0:01:00']],
-#         [mdates.MicrosecondLocator,
-#          {'interval': 300000},
-#          datetime.timedelta(seconds=2),
-#          ['-1 day, 23:59:59.700000', '0:00:00', '0:00:00.300000',
-#           '0:00:00.600000', '0:00:00.900000', '0:00:01.200000',
-#           '0:00:01.500000', '0:00:01.800000', '0:00:02.100000']]
-#     ]
-#
-#     for loc_cls, kwargs, dt1, expected in results:
-#         locator = loc_cls(**kwargs)
-#         locator.create_dummy_axis()
-#         locator.set_axis(locator.axis)  # only because of MicrosecondLocator
-#         locator.set_view_interval(*mdates.date2num([dt0, dt1]))
-#         assert list(map(str, mdates.num2timedelta(locator()))) == expected
-#
-#
-# def test_timedelta_epoch_independent():
-#     # timedelta is handled as datetime internally
-#     # make sure this is independent of the epoch
-#     mdates._reset_epoch_test_example()
-#     mdates.set_epoch("2000-01-01")
-#     test_auto_timedelta_locator()
-#     mdates._reset_epoch_test_example()
-#
-#
-# def test_auto_modified_intervald():
-#     locator = tmpldelta.AutoTimedeltaLocator()
-#     locator.intervald[mdates.HOURLY] = [3]
-#     locator.create_dummy_axis()
-#     dt1 = datetime.timedelta(days=1)
-#     dt2 = datetime.timedelta(days=3)
-#     locator.set_view_interval(mdates.date2num(dt1),
-#                               mdates.date2num(dt2))
-#     expected = ['1 day, 0:00:00', '1 day, 3:00:00', '1 day, 6:00:00',
-#                 '1 day, 9:00:00', '1 day, 12:00:00', '1 day, 15:00:00',
-#                 '1 day, 18:00:00', '1 day, 21:00:00', '2 days, 0:00:00',
-#                 '2 days, 3:00:00', '2 days, 6:00:00', '2 days, 9:00:00',
-#                 '2 days, 12:00:00', '2 days, 15:00:00', '2 days, 18:00:00',
-#                 '2 days, 21:00:00', '3 days, 0:00:00']
-#     # auto would usually be using longer intervals for 2 days
-#     with pytest.warns(UserWarning, match="AutoDateLocator was unable"):
-#         res = list(map(str, mdates.num2timedelta(locator())))
-#     assert res == expected
+    assert list(map(str, mdates.num2timedelta(locator()))) == expected

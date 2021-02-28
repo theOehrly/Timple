@@ -158,4 +158,4 @@ jobs:
 
       - name: Update mpl version cache file
         run: |
-          echo ${{ steps.version.outputs.current }}" > mpl_version_last_run.txt
+          echo "${{ steps.version.outputs.current }}" > mpl_version_last_run.txt

@@ -1,48 +1,42 @@
-import timple
-
 import pytest
-
-import datetime
 import numpy as np
+import datetime
+
+# NOTE:
+# imports for timple and matplotlib are automatically cleaned up before
+# EACH individual test. Therefore, imports for timple and matplotlib
+# need to be done inside a test and on a per test basis
 
 
-def test_enable_disable(mpl):
+def test_enable_disable():
+    import timple
+    import matplotlib.units as munits
+
     # test enabling and disabing Timple to ensure it works as expected and
     # can be removed again
-    tmpl = timple.Timple(mpl)
+    tmpl = timple.Timple()
 
     td = np.timedelta64(1, 'D')
     # not yet enabled
-    assert mpl.units._is_natively_supported(td)
-    assert np.timedelta64 not in mpl.units.registry
-    assert datetime.timedelta not in mpl.units.registry
+    assert munits._is_natively_supported(td)
+    assert np.timedelta64 not in munits.registry
+    assert datetime.timedelta not in munits.registry
 
     tmpl.enable()
-    assert not mpl.units._is_natively_supported(td)
-    assert np.timedelta64 in mpl.units.registry
-    assert datetime.timedelta in mpl.units.registry
+    assert not munits._is_natively_supported(td)
+    assert np.timedelta64 in munits.registry
+    assert datetime.timedelta in munits.registry
 
     tmpl.disable()
-    assert mpl.units._is_natively_supported(td)
-    assert np.timedelta64 not in mpl.units.registry
-    assert datetime.timedelta not in mpl.units.registry
+    assert munits._is_natively_supported(td)
+    assert np.timedelta64 not in munits.registry
+    assert datetime.timedelta not in munits.registry
 
 
-def test_date2num_pandas_nat(pd, mpl):
-    tmpl = timple.Timple(mpl)
-
-    test_case = [pd.Timestamp('1970-01-03'), pd.NaT]
-    expected = [2.0, np.nan]
-
-    with pytest.raises(ValueError):
-        np.testing.assert_equal(mpl.dates.date2num(test_case), expected)
-
-    tmpl.enable(pd_nat_dates_support=True)
-    np.testing.assert_equal(mpl.dates.date2num(test_case), expected)
-
-
-def test_mpl_default_functionality(mpl):
-    tmpl = timple.Timple(mpl)
+def test_mpl_default_functionality():
+    import matplotlib as mpl
+    import timple
+    tmpl = timple.Timple()
     tmpl.enable()
 
     ret = 0
@@ -57,3 +51,17 @@ def test_mpl_default_functionality(mpl):
     if ret != 0:
         raise Exception("Subtests for matplotlib failed!"
                         "Have you installed matplotlib from sources?")
+
+
+def test_date2num_pandas_nat(pd):
+    import timple
+    import matplotlib.dates as mdates
+    tmpl = timple.Timple()
+    test_case = [pd.Timestamp('1970-01-03'), pd.NaT]
+    expected = [2.0, np.nan]
+
+    with pytest.raises(ValueError):
+        np.testing.assert_equal(mdates.date2num(test_case), expected)
+
+    tmpl.enable(pd_nat_dates_support=True)
+    np.testing.assert_equal(mdates.date2num(test_case), expected)

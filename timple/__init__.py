@@ -1,12 +1,15 @@
 import numpy as np
 import datetime
+import matplotlib as mpl
+from matplotlib import units as munits
+from matplotlib import dates as mdates
 
 from .timedelta import TimedeltaConverter, ConciseTimedeltaConverter
 from . import patches
 
 
 class Timple:
-    def __init__(self, mpl, converter='default'):
+    def __init__(self, converter='default'):
         """
         Parameters
         ----------
@@ -18,7 +21,6 @@ class Timple:
         """
         if converter not in ('default', 'auto', 'concise'):
             raise ValueError("Invalid value for keyword argument 'converter'")
-        self._mpl = mpl
         self._revert_funcs = list()
         self._converter = converter
 
@@ -65,7 +67,7 @@ class Timple:
         if self._converter == 'default':
             try:
                 # option only exists in matplotlib >= 3.4.0
-                conv_type = self._mpl.rcParams['date.converter']
+                conv_type = mpl.rcParams['date.converter']
                 if conv_type not in ('auto', 'concise'):
                     raise ValueError
             except (KeyError, ValueError):
@@ -79,12 +81,12 @@ class Timple:
             timedelta_converter = TimedeltaConverter
 
         conv_inst = timedelta_converter()
-        self._mpl.units.registry[np.timedelta64] = conv_inst
-        self._mpl.units.registry[datetime.timedelta] = conv_inst
+        munits.registry[np.timedelta64] = conv_inst
+        munits.registry[datetime.timedelta] = conv_inst
 
         def revert():
-            del self._mpl.units.registry[np.timedelta64]
-            del self._mpl.units.registry[datetime.timedelta]
+            del munits.registry[np.timedelta64]
+            del munits.registry[datetime.timedelta]
 
         return revert
 
@@ -93,14 +95,14 @@ class Timple:
         # timedelta is a Number and therefore 'supported' by default
         # make it 'unsupported' so matplotlib will use the converter
         # return a function that reverts this change
-        orig_func = self._mpl.units._is_natively_supported
+        orig_func = munits._is_natively_supported
 
-        patched = patches.get_patched_is_natively_supported(self._mpl)
+        patched = patches.get_patched_is_natively_supported(mpl)
 
-        self._mpl.units._is_natively_supported = patched
+        munits._is_natively_supported = patched
 
         def revert():
-            self._mpl.units._is_natively_supported = orig_func
+            munits._is_natively_supported = orig_func
 
         return revert
 
@@ -108,12 +110,12 @@ class Timple:
         # patch matplotlibs dates.date2num function to add support for
         # pandas nat
         # return a function that reverts this change
-        orig_func = self._mpl.dates.date2num
+        orig_func = mdates.date2num
 
-        patched = patches.get_patched_date2num(self._mpl)
-        self._mpl.dates.date2num = patched
+        patched = patches.get_patched_date2num(mpl)
+        mdates.date2num = patched
 
         def revert():
-            self._mpl.dates.date2num = orig_func
+            mdates.date2num = orig_func
 
         return revert

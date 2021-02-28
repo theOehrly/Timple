@@ -79,18 +79,18 @@ jobs:
           echo ::set-output name=run::$RUN_TESTS
 
       - name: Setup python
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         uses: actions/setup-python@v2
         with:
           python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         uses: actions/checkout@v2
 
       - name: Install OS dependencies
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
             sudo apt-get update -yy
             sudo apt-get install -yy \
@@ -130,7 +130,7 @@ jobs:
               ttf-wqy-zenhei
 
       - name: Cache pip
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -139,14 +139,14 @@ jobs:
             pip-cache
 
       - name: Download latest released sources for matplotlib
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
           curl -L -o matplotlib.tar.gz ${{ steps.version.outputs.location }}
           tar -xf matplotlib.tar.gz
           rm matplotlib.tar.gz
 
       - name: Install Python dependencies
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
           # Upgrade pip and setuptools and wheel to get as clean an install as
           # possible.
@@ -175,18 +175,18 @@ jobs:
             echo 'wxPython is not available'
 
       - name: Install matplotlib from sources
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
           cd matplotlib-${{ steps.version.outputs.current }}
           python3 -m pip install --no-deps -e .
 
       - name: Run Timple Tests
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
           python3 -m pip install -r requirements-dev.txt  # ensure package requirements
           xvfb-run -a python3 -m pytest -raR
 
       - name: Update mpl version cache file
-        if: steps.version.outputs.run == "yes"
+        if: steps.version.outputs.run == 'yes'
         run: |
           echo "${{ steps.version.outputs.current }}" > mpl_version_last_run.txt

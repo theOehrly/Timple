@@ -1,31 +1,39 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Test Matplotlib Release
+name: Run tests
 
 env:
+  # variables copied from matplotlib's test workflow
   NO_AT_BRIDGE: 1  # Necessary for GTK3 interactive test.
   OPENBLAS_NUM_THREADS: 1
   PYTHONFAULTHANDLER: 1
 
 # Controls when the action will run. 
 on:
-  # Allows you to run this workflow manually from the Actions tab
+  # run on push, manual dispatch and on a schedule
+  # when run on schedule, tests will only be run if a new matplotlib release was found
   workflow_dispatch:
+  push:
+  schedule:
+    - cron:  '* */8 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # Check for new matplotlib releases and run tests if a new release is available
-  test-on-mpl-release:
+  run-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-16.04
 
     steps:
+      # cached version file is used to remember the matplotlib release version
+      # number from the last run
       - name: Cache version from last run
         uses: actions/cache@v2
         with:
           path: mpl_version_last_run.txt
-          key: version-cache  # -${{ hashFiles('*.txt') }}
+          key: version-cache
 
+      # check which is the newest matplotlib release version number
+      # determine whether to actually run tests depending on current and last release number
+      #   and on the event that triggered the run
       - name: Version Check
         id: version
         run: |
@@ -44,28 +52,45 @@ jobs:
           then
             LAST_MPL_VERSION=$(<mpl_version_last_run.txt)
           else
-            LAST_MPL_VERSION=$"unknown"
+            LAST_MPL_VERSION="unknown"
           fi
 
-
+          echo "Event that triggered this run: ${{ github.event_name }}"
           echo "The current matplotlib version is $CURRENT_MPL_VERSION"
           echo "URL for sources: $MPL_LOCATION"
           echo "The matplotlib version on the last run was $LAST_MPL_VERSION"
+          echo ""
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || \
+                "${{ github.event_name }}" == "push" ||
+                ( "${{ github.event_name }}" == "schedule" && "$LAST_MPL_VERSION" != "$CURRENT_MPL_VERSION" ) \
+             ]];
+          then
+            echo "Tests will be run! Continuing..."
+            RUN_TESTS="yes"
+          else
+            echo "Tests will not be run! Exiting..."
+            RUN_TESTS="no"
+          fi
 
           echo ::set-output name=current::$CURRENT_MPL_VERSION
           echo ::set-output name=location::$MPL_LOCATION
           echo ::set-output name=last::$LAST_MPL_VERSION
+          echo ::set-output name=run::$RUN_TESTS
 
       - name: Setup python
+        if: steps.version.outputs.run == "yes"
         uses: actions/setup-python@v2
         with:
           python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
+        if: steps.version.outputs.run == "yes"
         uses: actions/checkout@v2
 
       - name: Install OS dependencies
+        if: steps.version.outputs.run == "yes"
         run: |
             sudo apt-get update -yy
             sudo apt-get install -yy \
@@ -105,6 +130,7 @@ jobs:
               ttf-wqy-zenhei
 
       - name: Cache pip
+        if: steps.version.outputs.run == "yes"
         uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -113,12 +139,14 @@ jobs:
             pip-cache
 
       - name: Download latest released sources for matplotlib
+        if: steps.version.outputs.run == "yes"
         run: |
           curl -L -o matplotlib.tar.gz ${{ steps.version.outputs.location }}
           tar -xf matplotlib.tar.gz
           rm matplotlib.tar.gz
 
       - name: Install Python dependencies
+        if: steps.version.outputs.run == "yes"
         run: |
           # Upgrade pip and setuptools and wheel to get as clean an install as
           # possible.
@@ -147,15 +175,18 @@ jobs:
             echo 'wxPython is not available'
 
       - name: Install matplotlib from sources
+        if: steps.version.outputs.run == "yes"
         run: |
           cd matplotlib-${{ steps.version.outputs.current }}
           python3 -m pip install --no-deps -e .
 
       - name: Run Timple Tests
+        if: steps.version.outputs.run == "yes"
         run: |
           python3 -m pip install -r requirements-dev.txt  # ensure package requirements
           xvfb-run -a python3 -m pytest -raR
 
       - name: Update mpl version cache file
+        if: steps.version.outputs.run == "yes"
         run: |
           echo "${{ steps.version.outputs.current }}" > mpl_version_last_run.txt

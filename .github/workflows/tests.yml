@@ -12,6 +12,8 @@ on:
   # when run on schedule, tests will only be run if a new matplotlib release was found
   workflow_dispatch:
   push:
+    branches-ignore:
+      - gh-pages
   schedule:
     - cron:  '0 */8 * * *'
 

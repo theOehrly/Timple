@@ -38,7 +38,7 @@ def test_timdelta_formatter():
         formatter = tmpldelta.TimedeltaFormatter(fmt, **kwargs)
         ax.yaxis.set_major_locator(locator)
         ax.yaxis.set_major_formatter(formatter)
-        ax.set_ylim(td1, td2)
+        ax.set_ylim(tmpldelta.timedelta2num((td1, td2)))
         fig.canvas.draw()
         sts = [st.get_text() for st in ax.get_yticklabels()]
         offset_text = ax.yaxis.get_offset_text().get_text()
@@ -125,7 +125,7 @@ def test_concise_timedelta_formatter():
         formatter = tmpldelta.ConciseTimedeltaFormatter(locator)
         ax.yaxis.set_major_locator(locator)
         ax.yaxis.set_major_formatter(formatter)
-        ax.set_ylim(td1, td2)
+        ax.set_ylim(tmpldelta.timedelta2num((td1, td2)))
         fig.canvas.draw()
         sts = [st.get_text() for st in ax.get_yticklabels()]
         offset_text = ax.yaxis.get_offset_text().get_text()
@@ -177,7 +177,7 @@ def test_auto_timedelta_formatter():
         formatter = tmpldelta.AutoTimedeltaFormatter(locator)
         ax.yaxis.set_major_locator(locator)
         ax.yaxis.set_major_formatter(formatter)
-        ax.set_ylim(td1, td2)
+        ax.set_ylim(tmpldelta.timedelta2num((td1, td2)))
         fig.canvas.draw()
         sts = [st.get_text() for st in ax.get_yticklabels()]
         offset_text = ax.yaxis.get_offset_text().get_text()

@@ -848,7 +848,6 @@ class TimedeltaLocator(ticker.MultipleLocator):
         Given the proposed upper and lower extent, adjust the range
         if it is too close to being singular (i.e. a range of ~0).
         """
-        vmin, vmax = timedelta2num((vmin, vmax))
         if not np.isfinite(vmin) or not np.isfinite(vmax):
             # Except if there is no data, then use 1 day - 2 days as default.
             return (timedelta2num(datetime.timedelta(days=1)),
@@ -902,7 +901,6 @@ class FixedTimedeltaLocator(TimedeltaLocator):
         return self._freq
 
     def nonsingular(self, vmin, vmax):
-        vmin, vmax = timedelta2num((vmin, vmax))
         if not np.isfinite(vmin) or not np.isfinite(vmax):
             # Except if there is no data, then use 1 day - 2 days as default.
             return (timedelta2num(datetime.timedelta(days=1)),
@@ -1013,7 +1011,6 @@ class AutoTimedeltaLocator(TimedeltaLocator):
     def nonsingular(self, vmin, vmax):
         # whatever is thrown at us, we can scale the unit.
         # But default nonsingular date plots at an ~4 day period.
-        vmin, vmax = timedelta2num((vmin, vmax))
         if not np.isfinite(vmin) or not np.isfinite(vmax):
             # Except if there is no data, then use 1 day - 2 days as default.
             return (timedelta2num(datetime.timedelta(days=1)),

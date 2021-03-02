@@ -20,6 +20,7 @@ Example plot:
 
 ![image of example plot](docs/_static/intro_example.svg)
 
+The full documentation can be found here: https://theoehrly.github.io/Timple/
 
 #### Features
 
@@ -39,11 +40,10 @@ locators and formatters will be used to determine the tick locations and
 format best suited for the plotted data. Further customization is possible.
 
 ```
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import timple
 
-tmpl = timple.Timple(mpl)
+tmpl = timple.Timple()
 tmpl.enable()
 
 # you can now just use matplotlib as always

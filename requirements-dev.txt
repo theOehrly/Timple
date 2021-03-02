@@ -1,8 +1,0 @@
-pytest
-pandas
-numpy
-matplotlib
-sphinx
-sphinx_rtd_theme
-setuptools
-wheel

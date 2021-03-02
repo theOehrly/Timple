@@ -1,0 +1,1377 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>timple.timedelta &mdash; Timple 0.1.0-rc documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Timple
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../timple.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html">Formatters, locators and converters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple-timedelta-format">Timple timedelta format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timedelta-tickers">Timedelta tickers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timedelta-formatters">Timedelta formatters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timedelta-format-strings">Timedelta format strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timedelta-converters">Timedelta converters</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Timple</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>timple.timedelta</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for timple.timedelta</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. currentmodule:: timple.timedelta</span>
+
+
+<span class="sd">Formatters, locators and converters</span>
+<span class="sd">===================================</span>
+
+
+<span class="sd">Timple timedelta format</span>
+<span class="sd">-----------------------</span>
+
+<span class="sd">Timple represents timedeltas using floating point numbers.</span>
+<span class="sd">A value of 1.0 corresponds to a timedelta of 1 day.</span>
+
+<span class="sd">There are two helper functions for converting between timedelta-like</span>
+<span class="sd">values and Timple&#39;s floating point timedeltas.</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :nosignatures:</span>
+
+<span class="sd">   timedelta2num</span>
+<span class="sd">   num2timedelta</span>
+
+
+<span class="sd">A wide range of specific and general purpose timedelta tick locators and</span>
+<span class="sd">formatters are provided in this module.</span>
+<span class="sd">You should check Matplotlib&#39;s documentation for general information on tick</span>
+<span class="sd">locators and formatters at :mod:`matplotlib.ticker`.</span>
+<span class="sd">These tickers and locators are described below.</span>
+
+
+<span class="sd">Timedelta tickers</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">The available date tickers are:</span>
+
+<span class="sd">* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours or</span>
+<span class="sd">  days (the &#39;base unit&#39;) in fixed intervals.</span>
+<span class="sd">  Tick locations will always be multiples of the selected interval.</span>
+<span class="sd">  E.g. if the interval is 15 and the base unit &#39;seconds&#39;, the locator will</span>
+<span class="sd">  pick 0, 15, 30, 45 seconds as tick locations::</span>
+
+<span class="sd">    loc = FixedTimedeltaLocator(base_unit=&#39;seconds&#39;, interval=&#39;15&#39;)</span>
+
+<span class="sd">* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base unit</span>
+<span class="sd">  (e.g. &#39;minutes&#39;) and the best interval to set the view limits and the tick</span>
+<span class="sd">  locations.</span>
+<span class="sd">  Tick locations will always be a multiple of the chosen interval.</span>
+
+
+<span class="sd">Timedelta formatters</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">The available date formatters are:</span>
+
+<span class="sd">* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to use. This is</span>
+<span class="sd">  most useful when used with the `AutoTimedeltaLocator`.</span>
+
+<span class="sd">* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best format to use,</span>
+<span class="sd">  and to make the format as compact as possible while still having complete</span>
+<span class="sd">  date information. The formatter will make use of axis offsets to shorten the</span>
+<span class="sd">  length of the tick label when possible.</span>
+<span class="sd">  This is most useful when used with the `AutoTimedeltaLocator`.</span>
+
+<span class="sd">* :class:`TimedeltaFormatter` : use custom timedelta format strings and a custom axis offset.</span>
+
+
+<span class="sd">Timedelta format strings</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">Timple uses format strings to define the format of the tick labels and axis</span>
+<span class="sd">offset.</span>
+
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| Directive    | Meaning                   | Example                          |</span>
+<span class="sd">+==============+===========================+==================================+</span>
+<span class="sd">| ``%d``       | The number of days        | 0, 1, 2, ...                     |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%h``       | Hours up to one day       | 00 ... 23                        |</span>
+<span class="sd">|              | (with zero-padding)       |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%H``       | Total number of hours     | 0, 1, 2, .... 50, 51, ...        |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%m``       | Minutes up to one hour    | 00 ... 59                        |</span>
+<span class="sd">|              | (with zero-padding)       |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%M``       | Total number of minutes   | 0, 1, 2, ..... 100, 101, ...     |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%s``       | Seconds up to one minute  | 00 ... 59                        |</span>
+<span class="sd">|              | (with zero-padding)       |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%S``       | Total number of seconds   | 0, 1, 2, ..... 100, 101, ...     |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%ms``      | Milliseconds up to one    | 000 ... 999                      |</span>
+<span class="sd">|              | second                    |                                  |</span>
+<span class="sd">|              | (with zero-padding)       |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%us``      | Microseconds up to one    | 000 ... 999                      |</span>
+<span class="sd">|              | millisecond               |                                  |</span>
+<span class="sd">|              | (with zero-padding)       |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+<span class="sd">| ``%day``     | The string &#39;day&#39; with     |  &#39;day&#39; or &#39;days&#39;                 |</span>
+<span class="sd">|              | correct plural            |                                  |</span>
+<span class="sd">+--------------+---------------------------+----------------------------------+</span>
+
+
+<span class="sd">The following two functions can be used to format timedelta values with a</span>
+<span class="sd">format string:</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :nosignatures:</span>
+
+<span class="sd">   strftimedelta</span>
+<span class="sd">   strftdnum</span>
+
+
+<span class="sd">String formatting examples::</span>
+
+<span class="sd">    &gt;&gt;&gt; import datetime</span>
+
+<span class="sd">    &gt;&gt;&gt; fmt = &quot;%d %day, %h:%m&quot;</span>
+<span class="sd">    &gt;&gt;&gt; td = datetime.timedelta(days=10, hours=6, minutes=14)</span>
+<span class="sd">    &gt;&gt;&gt; strftimedelta(td, fmt)</span>
+<span class="sd">    10 days, 06:14</span>
+
+<span class="sd">2.5 days as days and hours::</span>
+
+<span class="sd">    &gt;&gt;&gt; fmt = &quot;%d %day and %h:00&quot;</span>
+<span class="sd">    &gt;&gt;&gt; td = datetime.timedelta(days=2, hours=12)</span>
+<span class="sd">    &gt;&gt;&gt; strftimedelta(td, fmt)</span>
+<span class="sd">    2 days and 12:00</span>
+
+<span class="sd">2.5 days as hours only::</span>
+
+<span class="sd">    &gt;&gt;&gt; fmt = &quot;%H:00&quot;</span>
+<span class="sd">    &gt;&gt;&gt; td = datetime.timedelta(days=2, hours=12)</span>
+<span class="sd">    &gt;&gt;&gt; strftimedelta(td, fmt)</span>
+<span class="sd">    60:00</span>
+
+<span class="sd">Seconds with millisecond and microseconds as decimals::</span>
+
+<span class="sd">    &gt;&gt;&gt; fmt = &quot;%S.%ms%us seconds&quot;</span>
+<span class="sd">    &gt;&gt;&gt; td = datetime.timedelta(seconds=2, milliseconds=351, microseconds=16)</span>
+<span class="sd">    &gt;&gt;&gt; strftimedelta(td, fmt)</span>
+<span class="sd">    2.351016 seconds</span>
+
+
+<span class="sd">Timedelta converters</span>
+<span class="sd">--------------------</span>
+
+<span class="sd">Timple provides two timedelta converters which can be registered through</span>
+<span class="sd">Matplotlib&#39;s unit conversion interface (see `matplotlib.units`):</span>
+
+<span class="sd">.. autosummary::</span>
+<span class="sd">   :nosignatures:</span>
+
+<span class="sd">   TimedeltaConverter</span>
+<span class="sd">   ConciseTimedeltaConverter</span>
+
+<span class="sd">Usually you don&#39;t need to interact with these converters.</span>
+<span class="sd">When enabling Timple, one of them is automatically registered with Matplotlib.</span>
+<span class="sd">(see :mod:`timple.timple`)</span>
+
+<span class="sd">The only difference between these converters is the default formatter that is</span>
+<span class="sd">used. `ConciseTimdeltaConverter` will use the `ConsciseTimedeltaFormatter` by</span>
+<span class="sd">default while `TimedeltaConverter` will use `AutoTimedeltaFormatter`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">units</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># only available for matplotlib version &gt;= 3.4.0</span>
+    <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">_wrap_in_tex</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_wrap_in_tex</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="c1"># Braces ensure dashes are not spaced like binary operators.</span>
+        <span class="k">return</span> <span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathdefault{&#39;</span> <span class="o">+</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;{-}&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}$&#39;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;num2timedelta&#39;</span><span class="p">,</span> <span class="s1">&#39;timedelta2num&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TimedeltaFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;ConciseTimedeltaFormatter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;AutoTimedeltaFormatter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TimedeltaLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;AutoTimedeltaLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;FixedTimedeltaLocator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TimedeltaConverter&#39;</span><span class="p">,</span> <span class="s1">&#39;ConciseTimedeltaConverter&#39;</span><span class="p">)</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Time-related constants.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">HOURS_PER_DAY</span> <span class="o">=</span> <span class="mf">24.</span>
+<span class="n">MIN_PER_HOUR</span> <span class="o">=</span> <span class="mf">60.</span>
+<span class="n">SEC_PER_MIN</span> <span class="o">=</span> <span class="mf">60.</span>
+
+<span class="n">MINUTES_PER_DAY</span> <span class="o">=</span> <span class="n">MIN_PER_HOUR</span> <span class="o">*</span> <span class="n">HOURS_PER_DAY</span>
+
+<span class="n">SEC_PER_HOUR</span> <span class="o">=</span> <span class="n">SEC_PER_MIN</span> <span class="o">*</span> <span class="n">MIN_PER_HOUR</span>
+<span class="n">SEC_PER_DAY</span> <span class="o">=</span> <span class="n">SEC_PER_HOUR</span> <span class="o">*</span> <span class="n">HOURS_PER_DAY</span>
+
+<span class="n">MUSECONDS_PER_DAY</span> <span class="o">=</span> <span class="mf">1e6</span> <span class="o">*</span> <span class="n">SEC_PER_DAY</span>
+
+
+<span class="k">def</span> <span class="nf">_td64_to_ordinalf</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert `numpy.timedelta64` or an ndarray of those types to a number of</span>
+<span class="sd">    days as float. Roundoff is float64 precision. Practically: microseconds</span>
+<span class="sd">    for up to 292271 years, milliseconds for larger time spans.</span>
+<span class="sd">    (see `numpy.timedelta64`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># the &quot;extra&quot; ensures that we at least allow the dynamic range out to</span>
+    <span class="c1"># seconds.  That should get out to +/-2e11 years.</span>
+    <span class="n">dseconds</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;timedelta64[s]&#39;</span><span class="p">)</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="n">dseconds</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;timedelta64[ns]&#39;</span><span class="p">)</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">dseconds</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">dt</span> <span class="o">+=</span> <span class="n">extra</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.0e9</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span> <span class="o">/</span> <span class="n">SEC_PER_DAY</span>
+
+    <span class="n">NaT_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">(</span><span class="s1">&#39;NaT&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">d_int</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dt</span><span class="p">[</span><span class="n">d_int</span> <span class="o">==</span> <span class="n">NaT_int</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d_int</span> <span class="o">==</span> <span class="n">NaT_int</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">return</span> <span class="n">dt</span>
+
+
+<div class="viewcode-block" id="timedelta2num"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.timedelta2num">[docs]</a><span class="k">def</span> <span class="nf">timedelta2num</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert timedelta objects to Timple&#39;s timedeltas.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : `datetime.timedelta`, `numpy.timedelta64` or `pandas.Timedelta`</span>
+<span class="sd">        or sequences of these</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or sequence of floats</span>
+<span class="sd">        Number of days</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;values&quot;</span><span class="p">):</span>
+        <span class="c1"># this unpacks pandas series or dataframes...</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># make an iterable, but save state to unpack later:</span>
+    <span class="n">iterable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">:</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="c1"># deals with an empty array...</span>
+        <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;value&#39;</span><span class="p">):</span>
+        <span class="c1"># elements are pandas objects; temporarily convert data to numbers</span>
+        <span class="c1"># pandas nat is defined as the minimum value of int64,</span>
+        <span class="c1"># replace all &#39;min int&#39; values with the string &#39;nat&#39; and convert the</span>
+        <span class="c1"># array to the dtype of the first non-nat value</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;object&#39;</span><span class="p">)</span>
+        <span class="n">nat_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span> <span class="o">==</span> <span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">nat_mask</span><span class="p">):</span>
+            <span class="n">_ttype</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="o">~</span><span class="n">nat_mask</span><span class="p">]</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_ttype</span> <span class="o">=</span> <span class="s1">&#39;timedelta64[us]&#39;</span>  <span class="c1"># default in case of all NaT</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nat_mask</span><span class="p">,</span> <span class="s1">&#39;nat&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_ttype</span><span class="p">)</span>
+
+    <span class="c1"># convert to datetime64 or timedelta64 arrays, if not already:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">timedelta64</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;timedelta64[us]&#39;</span><span class="p">)</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">_td64_to_ordinalf</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">t</span> <span class="k">if</span> <span class="n">iterable</span> <span class="k">else</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<span class="n">_ordinalf_to_timedelta_np_vectorized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">x</span><span class="p">),</span> <span class="n">otypes</span><span class="o">=</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="num2timedelta"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.num2timedelta">[docs]</a><span class="k">def</span> <span class="nf">num2timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert number of days to a `~datetime.timedelta` object.</span>
+
+<span class="sd">    If *x* is a sequence, a sequence of `~datetime.timedelta` objects will</span>
+<span class="sd">    be returned.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : float, sequence of floats</span>
+<span class="sd">        Number of days. The fraction part represents hours, minutes, seconds.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `datetime.timedelta` or list[`datetime.timedelta`]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ordinalf_to_timedelta_np_vectorized</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+
+<span class="c1"># def pd_timedelta2np(t):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Convert `pandas.Timedelta` objects to `numpy.timedelta64`</span>
+<span class="c1">#</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     t: `pandas.Timedelta` or `pandas.NaT` or sequences of these</span>
+<span class="c1">#</span>
+<span class="c1">#     Returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     `numpy.timedelta64` or sequence of `numpy.timedelta64`</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     iterable = np.iterable(t)</span>
+<span class="c1">#     if not iterable:</span>
+<span class="c1">#         t = [t]</span>
+<span class="c1">#</span>
+<span class="c1">#     conv = list()</span>
+<span class="c1">#     for val in t:</span>
+<span class="c1">#         c = val.to_numpy()</span>
+<span class="c1">#         if np.isnat(c):</span>
+<span class="c1">#             # pandas.NaT.to_numpy() returns datetime64(&#39;nat&#39;)</span>
+<span class="c1">#             # but here we need timedelta64(&#39;nat&#39;)</span>
+<span class="c1">#             conv.append(np.timedelta64(&#39;nat&#39;))</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             conv.append(c)</span>
+<span class="c1">#</span>
+<span class="c1">#     t = np.asarray(conv)</span>
+<span class="c1">#     return t if iterable else t[0]</span>
+
+
+<span class="k">class</span> <span class="nc">_TimedeltaFormatTemplate</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">):</span>
+    <span class="c1"># formatting template for datetime-like formatter strings</span>
+    <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;%&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">strftimedelta</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="n">fmt_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a string representing a timedelta, controlled by an explicit</span>
+<span class="sd">    format string.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    td : datetime.timedelta</span>
+<span class="sd">    fmt_str : str</span>
+<span class="sd">        format string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># *_t values are not partially consumed by there next larger unit</span>
+    <span class="c1"># e.g. for timedelta(days=1.5): d=1, h=12, H=36</span>
+    <span class="n">s_t</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="k">if</span> <span class="n">s_t</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">s_t</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">s_t</span><span class="p">)</span>
+
+    <span class="n">d</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">s_t</span><span class="p">,</span> <span class="n">SEC_PER_DAY</span><span class="p">)</span>
+    <span class="n">m_t</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">SEC_PER_MIN</span><span class="p">)</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">m_t</span><span class="p">,</span> <span class="n">MIN_PER_HOUR</span><span class="p">)</span>
+    <span class="n">h_t</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">s_t</span><span class="p">,</span> <span class="n">SEC_PER_HOUR</span><span class="p">)</span>
+
+    <span class="n">us</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">microseconds</span>
+    <span class="n">ms</span><span class="p">,</span> <span class="n">us</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">us</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">)</span>
+
+    <span class="c1"># create correctly zero padded string for substitution</span>
+    <span class="c1"># last one is a special for correct day(s) plural</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">),</span>
+              <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">h_t</span><span class="p">),</span>
+              <span class="s1">&#39;M&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">m_t</span><span class="p">),</span>
+              <span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">s_t</span><span class="p">),</span>
+              <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">)),</span>
+              <span class="s1">&#39;m&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">)),</span>
+              <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:02d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)),</span>
+              <span class="s1">&#39;ms&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ms</span><span class="p">)),</span>
+              <span class="s1">&#39;us&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">us</span><span class="p">)),</span>
+              <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="s1">&#39;day&#39;</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s1">&#39;days&#39;</span><span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_TimedeltaFormatTemplate</span><span class="p">(</span><span class="n">fmt_str</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="o">**</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid format string &#39;</span><span class="si">{</span><span class="n">fmt_str</span><span class="si">}</span><span class="s2">&#39; for timedelta&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sign</span> <span class="o">+</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">strftdnum</span><span class="p">(</span><span class="n">td_num</span><span class="p">,</span> <span class="n">fmt_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a string representing a float based timedelta,</span>
+<span class="sd">    controlled by an explicit format string.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    td_num : float</span>
+<span class="sd">        timedelta in timple float representation</span>
+<span class="sd">    fmt_str : str</span>
+<span class="sd">        format string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">td</span> <span class="o">=</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">td_num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strftimedelta</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="n">fmt_str</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Format a tick (in days) with a format string or using as custom</span>
+<span class="sd">    `.FuncFormatter`.</span>
+
+<span class="sd">    This `.Formatter` formats ticks according to a fixed specification.</span>
+<span class="sd">    Ticks can optionally be offset to generate shorter tick labels.</span>
+
+<span class="sd">    .. note:: The format string for timedeltas works similar to a</span>
+<span class="sd">        `~datetime.datetime.strftime` format string but they are NOT the</span>
+<span class="sd">        same and NOT compatible.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Example plot::</span>
+
+<span class="sd">        import numpy as np</span>
+<span class="sd">        import datetime</span>
+<span class="sd">        import matplotlib.pyplot as plt</span>
+<span class="sd">        import timple</span>
+<span class="sd">        import timple.timedelta as tmpldelta</span>
+
+<span class="sd">        tmpl = timple.Timple()</span>
+<span class="sd">        tmpl.enable()</span>
+
+<span class="sd">        base = datetime.timedelta(days=100)</span>
+<span class="sd">        timedeltas = np.array([base + datetime.timedelta(minutes=(4 * i))</span>
+<span class="sd">                              for i in range(720)])</span>
+<span class="sd">        N = len(timedeltas)</span>
+<span class="sd">        np.random.seed(19680801)</span>
+<span class="sd">        y = np.cumsum(np.random.randn(N))</span>
+
+<span class="sd">        fig, ax = plt.subplots(constrained_layout=True)</span>
+<span class="sd">        locator = tmpldelta.AutoTimedeltaLocator()</span>
+<span class="sd">        formatter = tmpldelta.TimedeltaFormatter(&quot;%H:%m&quot;, offset_on=&#39;days&#39;,</span>
+<span class="sd">                                                 offset_fmt=&quot;%d %day&quot;)</span>
+<span class="sd">        ax.xaxis.set_major_locator(locator)</span>
+<span class="sd">        ax.xaxis.set_major_formatter(formatter)</span>
+
+<span class="sd">        ax.plot(timedeltas, y)</span>
+<span class="sd">        ax.set_title(&#39;Timedelta Formatter with Offset on Days&#39;)</span>
+
+<span class="sd">    .. image:: _static/timedelta_formatter_example.svg</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO explain format strings somewhere</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">offset_on</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset_fmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fmt : str or callable</span>
+<span class="sd">            a format string or a callable for formatting the tick values</span>
+
+<span class="sd">        offset_on : str, optional</span>
+<span class="sd">            One of ``(&#39;days&#39;, &#39;hours&#39;, &#39;minutes&#39;, &#39;seconds&#39;)``</span>
+
+<span class="sd">            Specifies how to offset large values; default is no offset.</span>
+<span class="sd">            If ``offset_on`` is set but ``offset_fmt`` is not, the offset will</span>
+<span class="sd">            be applied but not shown.</span>
+
+<span class="sd">        offset_fmt : str or callable</span>
+<span class="sd">            A format string or a callable for formatting the offset string.</span>
+<span class="sd">            This also requires ``offset_on`` to be specified.</span>
+
+<span class="sd">        usetex : bool, default: `text.usetex` from Matplotlib&#39;s rcParams</span>
+<span class="sd">            To enable/disable the use of TeX&#39;s math mode for rendering the</span>
+<span class="sd">            results of the formatter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">offset_on</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">offset_fmt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;offset_fmt&#39; requires &#39;offset_on to be &quot;</span>
+                             <span class="s2">&quot;specified.&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span> <span class="o">=</span> <span class="n">offset_fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="o">=</span> <span class="n">offset_on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_tick</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_format_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># format a single tick value</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">strftdnum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1"> as string &#39;</span>
+                            <span class="s1">&#39;formatter.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+<div class="viewcode-block" id="TimedeltaFormatter.get_offset"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.get_offset">[docs]</a>    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span></div>
+
+    <span class="k">def</span> <span class="nf">_offset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># offset the values based on data or view limits</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="c1"># evaluate data interval if available</span>
+        <span class="c1"># the leftmost (i.e. smallest) data value inside the view window</span>
+        <span class="c1"># is used as a reference value</span>
+        <span class="c1"># the offset is calculated so that the value of the reference is zero</span>
+        <span class="c1"># on the offset level</span>
+        <span class="c1"># Example: 1 day 12:00, 2 days 00:00, 2 days 12:00; offset on day</span>
+        <span class="c1"># Resulting offset: 1 day</span>
+        <span class="c1"># Resulting values: 0 days 12:00, 1 day 00:00, 1 day 12:00</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_ref</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_data_interval</span><span class="p">())</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">data_ref</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span>
+            <span class="c1"># ref based on data if fully zoomed out else based on view</span>
+
+        <span class="c1"># prevent floating point errors; 13 digits &gt; musecond precision</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+
+        <span class="c1"># calculate offset based on the reference value and the level</span>
+        <span class="c1"># specified by self.offset_on</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="o">==</span> <span class="s1">&#39;days&#39;</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="o">==</span> <span class="s1">&#39;hours&#39;</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ref</span><span class="o">*</span><span class="n">HOURS_PER_DAY</span><span class="p">)</span><span class="o">/</span><span class="n">HOURS_PER_DAY</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="o">==</span> <span class="s1">&#39;minutes&#39;</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ref</span><span class="o">*</span><span class="n">MINUTES_PER_DAY</span><span class="p">)</span><span class="o">/</span><span class="n">MINUTES_PER_DAY</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="o">==</span> <span class="s1">&#39;seconds&#39;</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ref</span><span class="o">*</span><span class="n">SEC_PER_DAY</span><span class="p">)</span><span class="o">/</span><span class="n">SEC_PER_DAY</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid value passed to </span><span class="si">{0!r}</span><span class="s2"> for &quot;</span>
+                             <span class="s2">&quot;&#39;offset_on&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="c1"># return the values with the offset applied and the offset itself</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">val</span> <span class="o">-</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">],</span> <span class="n">offset</span>
+
+<div class="viewcode-block" id="TimedeltaFormatter.format_ticks"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.format_ticks">[docs]</a>    <span class="k">def</span> <span class="nf">format_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_on</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># apply an offset to all values</span>
+            <span class="n">values</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="c1"># create labels based on the values after the offset was applied</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_tick</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">_wrap_in_tex</span><span class="p">(</span><span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># format the applied offset itself so it can be displayed</span>
+            <span class="c1"># as axis offset</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">offset_str</span> <span class="o">=</span> <span class="n">strftdnum</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">):</span>
+                <span class="n">offset_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1"> as offset &#39;</span>
+                                <span class="s1">&#39;string formatter.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">:</span>
+                <span class="n">offset_str</span> <span class="o">=</span> <span class="n">_wrap_in_tex</span><span class="p">(</span><span class="n">offset_str</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="n">offset_str</span>
+
+        <span class="k">return</span> <span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="ConciseTimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">ConciseTimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A `.Formatter` which attempts to figure out the best format to use for the</span>
+<span class="sd">    timedelta, and to make it as compact as possible, but still be complete.</span>
+<span class="sd">    This is most useful when used with the `AutoTimedeltaLocator`::</span>
+
+<span class="sd">    &gt;&gt;&gt; locator = AutoTimedeltaLocator()</span>
+<span class="sd">    &gt;&gt;&gt; formatter = ConciseTimedeltaFormatter(locator)</span>
+
+<span class="sd">    The formatter will make use of the axis offset. Depending on the tick</span>
+<span class="sd">    frequency of the locator, the axis offset as well as the format for ticks</span>
+<span class="sd">    and offset will be determined.</span>
+
+<span class="sd">    There are 5 tick levels. These are the same as the base units of the</span>
+<span class="sd">    locator. The levels are ``(&#39;days&#39;, &#39;hours&#39;, &#39;minutes&#39;, &#39;seconds&#39;,</span>
+<span class="sd">    &#39;microseconds&#39;)``.</span>
+<span class="sd">    For each tick level a format string, an offset format string and the</span>
+<span class="sd">    offset position can be specified. Else, the defaults will be used.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    locator : `.Locator`</span>
+<span class="sd">        Locator that the axis is using.</span>
+
+<span class="sd">    formats : list of 5 strings, optional</span>
+<span class="sd">        Format strings for tick labels.</span>
+<span class="sd">        TODO: ref explanation of codes</span>
+<span class="sd">        The default is::</span>
+
+<span class="sd">            [&quot;%d %day&quot;,</span>
+<span class="sd">             &quot;%H:00&quot;,</span>
+<span class="sd">             &quot;%H:%m&quot;,</span>
+<span class="sd">             &quot;%M:%s.0&quot;,</span>
+<span class="sd">             &quot;%S.%ms%us&quot;]</span>
+
+<span class="sd">    offset_formats : list of 5 tuples, optional</span>
+<span class="sd">        A combination of ``(offset format, offset position)`` where the offset</span>
+<span class="sd">        format is a format string similar to the tick format string.</span>
+<span class="sd">        Offset position specifies on which level the offset should be applied.</span>
+<span class="sd">        See the ``offset_fmt=`` and ``offset_on=`` arguments of</span>
+<span class="sd">        `TimedeltaFormatter`.</span>
+<span class="sd">        The default is::</span>
+
+<span class="sd">            [(None, None),</span>
+<span class="sd">             (&quot;%d %day&quot;, &quot;days&quot;),</span>
+<span class="sd">             (&quot;%d %day&quot;, &quot;days&quot;),</span>
+<span class="sd">             (&quot;%d %day, %h:00&quot;, &quot;hours&quot;),</span>
+<span class="sd">             (&quot;%d %day, %h:%m&quot;, &quot;minutes&quot;)]</span>
+
+<span class="sd">        For no offset, set both values of a level to None. To apply an offset</span>
+<span class="sd">        but don&#39;t show it, set only the format string to None.</span>
+
+<span class="sd">    show_offset : bool, default: True</span>
+<span class="sd">        Whether to show the offset or not.</span>
+
+<span class="sd">    usetex : bool, default: `text.usetex` from Matplotlib&#39;s rcParams</span>
+<span class="sd">        To enable/disable the use of TeX&#39;s math mode for rendering the results</span>
+<span class="sd">        of the formatter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset_formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">show_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span> <span class="o">=</span> <span class="n">locator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ays&quot;</span>  <span class="c1"># TODO</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_offset</span> <span class="o">=</span> <span class="n">show_offset</span>
+
+        <span class="c1"># 5 formatting levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="mi">1</span><span class="o">/</span><span class="n">HOURS_PER_DAY</span><span class="p">,</span>
+                        <span class="mi">1</span><span class="o">/</span><span class="n">MINUTES_PER_DAY</span><span class="p">,</span>
+                        <span class="mi">1</span><span class="o">/</span><span class="n">SEC_PER_DAY</span><span class="p">,</span>
+                        <span class="mi">1</span><span class="o">/</span><span class="n">MUSECONDS_PER_DAY</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">formats</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">formats</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;formats argument must be a list of &#39;</span>
+                                 <span class="s1">&#39;5 format strings (or None)&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formats</span> <span class="o">=</span> <span class="n">formats</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formats</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;%H:00&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;%H:%m&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;%M:</span><span class="si">%s</span><span class="s2">.0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;%S.%ms</span><span class="si">%u</span><span class="s2">s&quot;</span>
+            <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">offset_formats</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">offset_formats</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;offset_formats argument must be a list of &#39;</span>
+                                 <span class="s1">&#39;5 format strings (or None)&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_formats</span> <span class="o">=</span> <span class="n">offset_formats</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_formats</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay&quot;</span><span class="p">,</span> <span class="s2">&quot;days&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay&quot;</span><span class="p">,</span> <span class="s2">&quot;days&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay, %h:00&quot;</span><span class="p">,</span> <span class="s2">&quot;hours&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay, %h:%m&quot;</span><span class="p">,</span> <span class="s2">&quot;minutes&quot;</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">TimedeltaFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">formatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConciseTimedeltaFormatter.format_ticks"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.format_ticks">[docs]</a>    <span class="k">def</span> <span class="nf">format_ticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">locator_unit_scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">_get_unit</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">locator_unit_scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># get the level index corresponding to the locator unit scale and</span>
+        <span class="c1"># select the appropriate format strings and offset position</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_levels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">locator_unit_scale</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">offset_fmt</span><span class="p">,</span> <span class="n">offset_on</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_formats</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">TimedeltaFormatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">offset_fmt</span><span class="o">=</span><span class="n">offset_fmt</span><span class="p">,</span>
+                                       <span class="n">offset_on</span><span class="o">=</span><span class="n">offset_on</span><span class="p">,</span>
+                                       <span class="n">usetex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">)</span>
+        <span class="n">formatter</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">format_ticks</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_offset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">offset_str</span> <span class="o">=</span> <span class="n">formatter</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">labels</span></div>
+
+<div class="viewcode-block" id="ConciseTimedeltaFormatter.get_offset"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.get_offset">[docs]</a>    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_str</span></div></div>
+
+
+<div class="viewcode-block" id="AutoTimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">AutoTimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A `.Formatter` which attempts to figure out the best format to use. This</span>
+<span class="sd">    is most useful when used with the `AutoTimedeltaLocator`.</span>
+
+<span class="sd">    The AutoTimedeltaFormatter has a scale dictionary that maps the scale</span>
+<span class="sd">    of the tick (the distance in days between one major tick) and a</span>
+<span class="sd">    format string.  The default looks like this::</span>
+
+<span class="sd">        self.scaled = {</span>
+<span class="sd">            1: &quot;%d %day&quot;,</span>
+<span class="sd">            1 / HOURS_PER_DAY: &#39;%d %day, %h:%m&#39;,</span>
+<span class="sd">            1 / MINUTES_PER_DAY: &#39;%d %day, %h:%m&#39;,</span>
+<span class="sd">            1 / SEC_PER_DAY: &#39;%d %day, %h:%m:%s&#39;,</span>
+<span class="sd">            1e3 / MUSECONDS_PER_DAY: &#39;%d %day, %h:%m:%s.%ms&#39;,</span>
+<span class="sd">            1 / MUSECONDS_PER_DAY: &#39;%d %day, %h:%m:%s.%ms%us&#39;,</span>
+<span class="sd">        }</span>
+
+<span class="sd">    The algorithm picks the key in the dictionary that is &gt;= the</span>
+<span class="sd">    current scale and uses that format string.  You can customize this</span>
+<span class="sd">    dictionary by doing::</span>
+
+<span class="sd">    &gt;&gt;&gt; locator = AutoTimedeltaLocator()</span>
+<span class="sd">    &gt;&gt;&gt; formatter = AutoTimedeltaFormatter(locator)</span>
+<span class="sd">    &gt;&gt;&gt; formatter.scaled[1/(24.*60.)] = &#39;%M:%S&#39; # only show min and sec</span>
+
+<span class="sd">    A custom `.FuncFormatter` can also be used. See `AutoDateLocator` for an</span>
+<span class="sd">    example of this.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    locator : `.Locator`</span>
+<span class="sd">        Locator that this axis is using</span>
+
+<span class="sd">    defaultfmt : str</span>
+<span class="sd">        The default format to use if none of the values in ``self.scaled``</span>
+<span class="sd">        are greater than the unit returned by ``locator._get_unit()``.</span>
+
+<span class="sd">    usetex : bool, default: `text.usetex` from Matplotlib&#39;s rcParams</span>
+<span class="sd">        To enable/disable the use of TeX&#39;s math mode for rendering the</span>
+<span class="sd">        results of the formatter. If any entries in ``self.scaled`` are set</span>
+<span class="sd">        as functions, then it is up to the customized function to enable or</span>
+<span class="sd">        disable TeX&#39;s math mode itself.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">,</span> <span class="n">defaultfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Autoformat the timedelta labels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span> <span class="o">=</span> <span class="n">locator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span> <span class="o">=</span> <span class="n">defaultfmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaled</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay&quot;</span><span class="p">,</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="n">HOURS_PER_DAY</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m&#39;</span><span class="p">,</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="n">MINUTES_PER_DAY</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m&#39;</span><span class="p">,</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="n">SEC_PER_DAY</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m:</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="mf">1e3</span> <span class="o">/</span> <span class="n">MUSECONDS_PER_DAY</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m:</span><span class="si">%s</span><span class="s1">.%ms&#39;</span><span class="p">,</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="n">MUSECONDS_PER_DAY</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">ay, %h:%m:</span><span class="si">%s</span><span class="s1">.%ms</span><span class="si">%u</span><span class="s1">s&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_set_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locator</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span> <span class="o">=</span> <span class="n">locator</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">locator_unit_scale</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">_get_unit</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">locator_unit_scale</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Pick the first scale which is greater than the locator unit.</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">fmt</span> <span class="k">for</span> <span class="n">scale</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scaled</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="n">locator_unit_scale</span><span class="p">),</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">TimedeltaFormatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="TimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaLocator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the tick locations when plotting timedeltas.</span>
+
+<span class="sd">    This class is subclassed by other Locators and</span>
+<span class="sd">    is not meant to be used on its own.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_units : list</span>
+
+<span class="sd">        list of all supported base units</span>
+
+<span class="sd">        By default those are::</span>
+
+<span class="sd">            self.base_units = [&#39;days&#39;,</span>
+<span class="sd">                               &#39;hours&#39;,</span>
+<span class="sd">                               &#39;minutes&#39;,</span>
+<span class="sd">                               &#39;seconds&#39;,</span>
+<span class="sd">                               &#39;microseconds&#39;]</span>
+
+<span class="sd">    base_factors : dict</span>
+
+<span class="sd">        mapping of base units to conversion factors to convert from the</span>
+<span class="sd">        default day representation to hours, seconds, ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                             <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="n">HOURS_PER_DAY</span><span class="p">,</span>
+                             <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="n">MINUTES_PER_DAY</span><span class="p">,</span>
+                             <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="n">SEC_PER_DAY</span><span class="p">,</span>
+                             <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="n">MUSECONDS_PER_DAY</span><span class="p">}</span>
+        <span class="c1"># don&#39;t rely on order of dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;days&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;hours&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;minutes&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;seconds&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;microseconds&#39;</span><span class="p">]</span>  <span class="c1"># mind docstring for fixed locator</span>
+
+<div class="viewcode-block" id="TimedeltaLocator.datalim_to_td"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.datalim_to_td">[docs]</a>    <span class="k">def</span> <span class="nf">datalim_to_td</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert axis data interval to timedelta objects.&quot;&quot;&quot;</span>
+        <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_data_interval</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tmin</span> <span class="o">&gt;</span> <span class="n">tmax</span><span class="p">:</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span>
+
+        <span class="k">return</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmin</span><span class="p">),</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmax</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TimedeltaLocator.viewlim_to_td"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.viewlim_to_td">[docs]</a>    <span class="k">def</span> <span class="nf">viewlim_to_td</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert the view interval to timedelta objects.&quot;&quot;&quot;</span>
+        <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tmin</span> <span class="o">&gt;</span> <span class="n">tmax</span><span class="p">:</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span>
+        <span class="k">return</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmin</span><span class="p">),</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmax</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an instance of :class:`ticker.MultipleLocator` using base unit</span>
+<span class="sd">        and interval</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base : {&#39;days&#39;, &#39;hours&#39;, &#39;minutes&#39;,  &#39;seconds&#39;, &#39;microseconds&#39;}</span>
+<span class="sd">        interval : int or float</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        instance of :class:`matplotlib.ticker.MultipleLocator`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">interval</span><span class="o">/</span><span class="n">factor</span><span class="p">)</span>
+        <span class="n">locator</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">locator</span><span class="o">.</span><span class="n">set_view_interval</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">())</span>
+            <span class="n">locator</span><span class="o">.</span><span class="n">set_data_interval</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_data_interval</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">locator</span>
+
+    <span class="k">def</span> <span class="nf">_get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return how many days a unit of the locator is; used for</span>
+<span class="sd">        intelligent autoscaling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_get_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the number of units for each tick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="TimedeltaLocator.nonsingular"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.nonsingular">[docs]</a>    <span class="k">def</span> <span class="nf">nonsingular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the proposed upper and lower extent, adjust the range</span>
+<span class="sd">        if it is too close to being singular (i.e. a range of ~0).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmax</span><span class="p">):</span>
+            <span class="c1"># Except if there is no data, then use 1 day - 2 days as default.</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span>
+                    <span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;</span> <span class="n">vmin</span><span class="p">:</span>
+            <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">vmin</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_unit</span><span class="p">()</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_interval</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">-=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span> <span class="o">*</span> <span class="n">interval</span>
+            <span class="n">vmax</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span> <span class="o">*</span> <span class="n">interval</span>
+        <span class="k">return</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span></div></div>
+
+
+<div class="viewcode-block" id="FixedTimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">FixedTimedeltaLocator</span><span class="p">(</span><span class="n">TimedeltaLocator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make ticks in an interval of the base unit.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">      # Ticks every 2 days</span>
+<span class="sd">      locator = TimedeltaLocatorManual(&#39;days&#39;, 2)</span>
+
+<span class="sd">      # Ticks every 20 seconds</span>
+<span class="sd">      locator = TimedeltaLocatorManual(&#39;seconds&#39;, 20)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_unit</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_unit: {&#39;days&#39;, &#39;hours&#39;, &#39;minutes&#39;, &#39;seconds&#39;, &#39;microseconds&#39;}</span>
+<span class="sd">        interval: `int` or `float`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">base_unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;base must be one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base_unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span><span class="p">[</span><span class="n">base_unit</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_locator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">locator</span><span class="p">()</span>
+
+<div class="viewcode-block" id="FixedTimedeltaLocator.tick_values"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator.tick_values">[docs]</a>    <span class="k">def</span> <span class="nf">tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_locator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">tick_values</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span>
+
+<div class="viewcode-block" id="FixedTimedeltaLocator.nonsingular"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator.nonsingular">[docs]</a>    <span class="k">def</span> <span class="nf">nonsingular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmax</span><span class="p">):</span>
+            <span class="c1"># Except if there is no data, then use 1 day - 2 days as default.</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span>
+                    <span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;</span> <span class="n">vmin</span><span class="p">:</span>
+            <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">vmin</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_unit</span><span class="p">()</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_interval</span><span class="p">()</span>
+        <span class="c1"># factor adjusts unit from days to hours, seconds, ... if necessary</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-6</span> <span class="o">/</span> <span class="n">factor</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">-=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span> <span class="o">*</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">factor</span>
+            <span class="n">vmax</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">unit</span> <span class="o">*</span> <span class="n">interval</span> <span class="o">/</span> <span class="n">factor</span>
+        <span class="k">return</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span></div></div>
+
+
+<div class="viewcode-block" id="AutoTimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">AutoTimedeltaLocator</span><span class="p">(</span><span class="n">TimedeltaLocator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class automatically finds the best base unit and interval for setting</span>
+<span class="sd">    view limits and tick locations.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    intervald : dict</span>
+
+<span class="sd">        Mapping of tick frequencies to multiples allowed for that ticking.</span>
+<span class="sd">        The default is ::</span>
+
+<span class="sd">            self.intervald = {</span>
+<span class="sd">                &#39;days&#39;: [1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000, 2000,</span>
+<span class="sd">                         5000, 10000, 20000, 50000, 100000, 200000, 500000,</span>
+<span class="sd">                         1000000],</span>
+<span class="sd">                &#39;hours&#39;: [1, 2, 3, 4, 6, 8, 12],</span>
+<span class="sd">                &#39;minutes&#39;: [1, 2, 3, 5, 10, 15, 20, 30],</span>
+<span class="sd">                &#39;seconds&#39;: [1, 2, 3, 5, 10, 15, 20, 30],</span>
+<span class="sd">                &#39;microseconds&#39;: [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000,</span>
+<span class="sd">                                 2000, 5000, 10000, 20000, 50000, 100000,</span>
+<span class="sd">                                 200000, 500000, 1000000],</span>
+<span class="sd">            }</span>
+
+<span class="sd">        The interval is used to specify multiples that are appropriate for</span>
+<span class="sd">        the frequency of ticking. For instance, every 12 hours is sensible</span>
+<span class="sd">        for hourly ticks, but for minutes/seconds, 15 or 30 make sense.</span>
+
+<span class="sd">        When customizing, you should only modify the values for the existing</span>
+<span class="sd">        keys. You should not add or delete entries.</span>
+
+<span class="sd">        Example for forcing ticks every 3 hours::</span>
+
+<span class="sd">            locator = AutoTimedeltaLocator()</span>
+<span class="sd">            locator.intervald[&#39;hours&#39;] = [3]  # only show every 3 hours</span>
+
+<span class="sd">        For forcing ticks in one specific interval only,</span>
+<span class="sd">        :class:`FixedTimedeltaLocator` might be preferred.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minticks</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">maxticks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        minticks : int</span>
+<span class="sd">            The minimum number of ticks desired; controls whether ticks occur</span>
+<span class="sd">            daily, hourly, etc.</span>
+<span class="sd">        maxticks : int</span>
+<span class="sd">            The maximum number of ticks desired; controls the interval between</span>
+<span class="sd">            ticks (ticking every other, every 3, etc.).  For fine-grained</span>
+<span class="sd">            control, this can be a dictionary mapping individual base units</span>
+<span class="sd">            (&#39;days&#39;, &#39;hours&#39;, etc.) to their own maximum</span>
+<span class="sd">            number of ticks.  This can be used to keep the number of ticks</span>
+<span class="sd">            appropriate to the format chosen in `AutoDateFormatter`. Any</span>
+<span class="sd">            frequency not specified in this dictionary is given a default</span>
+<span class="sd">            value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intervald</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span>
+                     <span class="mi">5000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">200000</span><span class="p">,</span> <span class="mi">500000</span><span class="p">,</span>
+                     <span class="mi">1000000</span><span class="p">],</span>
+            <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">],</span>
+            <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+            <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+            <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span>
+                             <span class="mi">5000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">,</span> <span class="mi">100000</span><span class="p">,</span> <span class="mi">200000</span><span class="p">,</span> <span class="mi">500000</span><span class="p">,</span>
+                             <span class="mi">1000000</span><span class="p">],</span>
+        <span class="p">}</span>  <span class="c1"># mind the default in the docstring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minticks</span> <span class="o">=</span> <span class="n">minticks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxticks</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;days&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;hours&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+                         <span class="s1">&#39;minutes&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;seconds&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;microseconds&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">maxticks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maxticks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">maxticks</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># Assume we were given an integer. Use this as the maximum</span>
+                <span class="c1"># number of ticks for every frequency and create a</span>
+                <span class="c1"># dictionary for this</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maxticks</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">,</span> <span class="n">maxticks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># default is daily</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewlim_to_td</span><span class="p">()</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locator</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">locator</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AutoTimedeltaLocator.tick_values"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.tick_values">[docs]</a>    <span class="k">def</span> <span class="nf">tick_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_locator</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">locator</span><span class="o">.</span><span class="n">tick_values</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AutoTimedeltaLocator.nonsingular"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.nonsingular">[docs]</a>    <span class="k">def</span> <span class="nf">nonsingular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="c1"># whatever is thrown at us, we can scale the unit.</span>
+        <span class="c1"># But default nonsingular date plots at an ~4 day period.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">vmax</span><span class="p">):</span>
+            <span class="c1"># Except if there is no data, then use 1 day - 2 days as default.</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)),</span>
+                    <span class="n">timedelta2num</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">vmax</span> <span class="o">&lt;</span> <span class="n">vmin</span><span class="p">:</span>
+            <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">vmin</span>
+        <span class="k">if</span> <span class="n">vmin</span> <span class="o">==</span> <span class="n">vmax</span><span class="p">:</span>
+            <span class="n">vmin</span> <span class="o">-=</span> <span class="mi">2</span>
+            <span class="n">vmax</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span>
+
+<div class="viewcode-block" id="AutoTimedeltaLocator.get_locator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.get_locator">[docs]</a>    <span class="k">def</span> <span class="nf">get_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the best locator based on the given limits.</span>
+
+<span class="sd">        This will choose the settings for a</span>
+<span class="sd">        :class:`matplotlib.ticker.MultipleLocator`</span>
+<span class="sd">        based on the available base units and associated intervals.</span>
+<span class="sd">        The locator is created so that there are as few ticks as possible</span>
+<span class="sd">        but more ticks than specified with min_ticks in init.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        instance of :class:`matplotlib.ticker.MultipleLocator`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tdelta</span> <span class="o">=</span> <span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span>
+
+        <span class="c1"># take absolute difference</span>
+        <span class="k">if</span> <span class="n">vmin</span> <span class="o">&gt;</span> <span class="n">vmax</span><span class="p">:</span>
+            <span class="n">tdelta</span> <span class="o">=</span> <span class="o">-</span><span class="n">tdelta</span>
+
+        <span class="n">tdelta</span> <span class="o">=</span> <span class="n">timedelta2num</span><span class="p">(</span><span class="n">tdelta</span><span class="p">)</span>
+
+        <span class="c1"># find an appropriate base unit and interval for it</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base</span><span class="p">(</span><span class="n">tdelta</span><span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+        <span class="n">norm_delta</span> <span class="o">=</span> <span class="n">tdelta</span> <span class="o">*</span> <span class="n">factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">factor</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_interval_for_base</span><span class="p">(</span><span class="n">norm_delta</span><span class="p">,</span> <span class="n">base</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_locator</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tdelta</span><span class="p">):</span>
+        <span class="c1"># find appropriate base unit for given time delta</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="s1">&#39;days&#39;</span>  <span class="c1"># fallback</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_units</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_factors</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">tdelta</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minticks</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># intervald was modified</span>
+        <span class="k">return</span> <span class="n">base</span>
+
+    <span class="k">def</span> <span class="nf">_get_interval_for_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_delta</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
+        <span class="c1"># find appropriate interval for given delta and min ticks</span>
+        <span class="c1"># norm_delta = tdelta * base_factor</span>
+        <span class="n">base_intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervald</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># fallback (and for static analysis)</span>
+        <span class="c1"># for interval in reversed(base_intervals):</span>
+        <span class="c1">#     if norm_delta // interval &gt;= self.minticks:</span>
+        <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">base_intervals</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">norm_delta</span> <span class="o">//</span> <span class="n">interval</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxticks</span><span class="p">[</span><span class="n">base</span><span class="p">]:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">interval</span></div>
+
+
+<div class="viewcode-block" id="TimedeltaConverter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaConverter</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">ConversionInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converter for `datetime.timedelta`, `numpy.timedelta64` and</span>
+<span class="sd">    `pandas.Timedelta` data.</span>
+
+<span class="sd">    The &#39;unit&#39; tag for such data is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TimedeltaConverter.axisinfo"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.axisinfo">[docs]</a>    <span class="k">def</span> <span class="nf">axisinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the `~matplotlib.units.AxisInfo`.</span>
+
+<span class="sd">        The *unit* and *axis* arguments are required but not used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">majloc</span> <span class="o">=</span> <span class="n">AutoTimedeltaLocator</span><span class="p">()</span>
+        <span class="n">majfmt</span> <span class="o">=</span> <span class="n">AutoTimedeltaFormatter</span><span class="p">(</span><span class="n">majloc</span><span class="p">)</span>
+        <span class="n">datemin</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">datemax</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">units</span><span class="o">.</span><span class="n">AxisInfo</span><span class="p">(</span><span class="n">majloc</span><span class="o">=</span><span class="n">majloc</span><span class="p">,</span> <span class="n">majfmt</span><span class="o">=</span><span class="n">majfmt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="n">default_limits</span><span class="o">=</span><span class="p">(</span><span class="n">datemin</span><span class="p">,</span> <span class="n">datemax</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TimedeltaConverter.convert"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.convert">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If *value* is not already a number or sequence of numbers, convert it</span>
+<span class="sd">        with `timedelta2num`.</span>
+
+<span class="sd">        The *unit* and *axis* arguments are not used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">timedelta2num</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ConciseTimedeltaConverter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaConverter">[docs]</a><span class="k">class</span> <span class="nc">ConciseTimedeltaConverter</span><span class="p">(</span><span class="n">TimedeltaConverter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converter for `datetime.timedelta`, `numpy.timedelta64` and</span>
+<span class="sd">    `pandas.Timedelta` data (prefers short tick formats).</span>
+
+<span class="sd">    The &#39;unit&#39; tag for such data is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset_formats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_formats</span> <span class="o">=</span> <span class="n">formats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_formats</span> <span class="o">=</span> <span class="n">offset_formats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_offset</span> <span class="o">=</span> <span class="n">show_offset</span>
+
+<div class="viewcode-block" id="ConciseTimedeltaConverter.axisinfo"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaConverter.axisinfo">[docs]</a>    <span class="k">def</span> <span class="nf">axisinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="n">majloc</span> <span class="o">=</span> <span class="n">AutoTimedeltaLocator</span><span class="p">()</span>
+        <span class="n">majfmt</span> <span class="o">=</span> <span class="n">ConciseTimedeltaFormatter</span><span class="p">(</span><span class="n">majloc</span><span class="p">,</span> <span class="n">formats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_formats</span><span class="p">,</span>
+                                           <span class="n">offset_formats</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset_formats</span><span class="p">,</span>
+                                           <span class="n">show_offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_show_offset</span><span class="p">)</span>
+        <span class="n">datemin</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">datemax</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">units</span><span class="o">.</span><span class="n">AxisInfo</span><span class="p">(</span><span class="n">majloc</span><span class="o">=</span><span class="n">majloc</span><span class="p">,</span> <span class="n">majfmt</span><span class="o">=</span><span class="n">majfmt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                              <span class="n">default_limits</span><span class="o">=</span><span class="p">(</span><span class="n">datemin</span><span class="p">,</span> <span class="n">datemax</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, theOehrly.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

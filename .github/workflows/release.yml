@@ -20,7 +20,7 @@ jobs:
         pip install setuptools wheel twine
 
     # if this is a release, upload to PyPI
-    - name: Build and publish
+    - name: Build and publish release
       if: github.event_name == 'release'
       env:
         TWINE_USERNAME: __token__
@@ -30,7 +30,7 @@ jobs:
         twine upload dist/*
 
       # if this is a manual dispatch, upload to TestPyPI
-    - name: Build and publish
+    - name: Build and publish test release
       if: github.event_name == 'workflow_dispatch'
       env:
         TWINE_USERNAME: __token__

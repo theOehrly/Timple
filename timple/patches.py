@@ -73,6 +73,7 @@ def get_patched_date2num(mpl):
 
     return date2num
 
+
 def get_patched_is_natively_supported(mpl):
     """Returns a patched version of
     `matplotlib.units._is_natively_supported`"""
@@ -84,7 +85,8 @@ def get_patched_is_natively_supported(mpl):
         patch_types = (datetime.timedelta, np.timedelta64)
         if isinstance(x, patch_types):
             return False
-        else:
-            return mpl_native(x, *args, **kwargs)
+        if isinstance(x, np.ndarray) and np.issubdtype(x.dtype, 'timedelta64'):
+                return False
+        return mpl_native(x, *args, **kwargs)
 
     return is_natively_supported

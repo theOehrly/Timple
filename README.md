@@ -1,14 +1,14 @@
 # Timple
 
-A package which provides extended support for plotting timedelta values in 
+Timple offers extended functionality for plotting timedelta values with 
 Matplotlib.
 
 
 ##  Overview
 
 Matplotlib generally supports plotting of timedelta values but only as 
-numeric values. It does not natively have locators and formatters to 
-create fancy plot ticks.
+numeric values and only for limited data types. It does not natively 
+have locators and formatters to create fancy plot ticks.
 
 This package provides the necessary locators and formatters to create 
 axis ticks in intervals of minutes, hours, ... 
@@ -26,6 +26,7 @@ The full documentation can be found here: https://theoehrly.github.io/Timple/
 
 - Formatters and Locators for timedelta
 - Matplotlib patching, so that everything can happen with minimal effort
+- Supports ``numpy.timedelta64``, ``datetime.timedelta``, ``pandas.Timedelta``
   
 Additionally
 - Support for ``pandas.NaT`` when plotting timedelta and optionally when

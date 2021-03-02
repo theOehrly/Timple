@@ -60,6 +60,10 @@
           
             
             
+              <div class="version">
+                0.1.0-rc
+              </div>
+            
           
 
           
@@ -195,17 +199,17 @@
 
 <span class="sd">The available date tickers are:</span>
 
-<span class="sd">* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours or</span>
-<span class="sd">  days (the &#39;base unit&#39;) in fixed intervals.</span>
+<span class="sd">* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours</span>
+<span class="sd">  or days (the &#39;base unit&#39;) in fixed intervals.</span>
 <span class="sd">  Tick locations will always be multiples of the selected interval.</span>
 <span class="sd">  E.g. if the interval is 15 and the base unit &#39;seconds&#39;, the locator will</span>
 <span class="sd">  pick 0, 15, 30, 45 seconds as tick locations::</span>
 
 <span class="sd">    loc = FixedTimedeltaLocator(base_unit=&#39;seconds&#39;, interval=&#39;15&#39;)</span>
 
-<span class="sd">* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base unit</span>
-<span class="sd">  (e.g. &#39;minutes&#39;) and the best interval to set the view limits and the tick</span>
-<span class="sd">  locations.</span>
+<span class="sd">* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base</span>
+<span class="sd">  unit (e.g. &#39;minutes&#39;) and the best interval to set the view limits and the</span>
+<span class="sd">  tick locations.</span>
 <span class="sd">  Tick locations will always be a multiple of the chosen interval.</span>
 
 
@@ -214,16 +218,17 @@
 
 <span class="sd">The available date formatters are:</span>
 
-<span class="sd">* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to use. This is</span>
-<span class="sd">  most useful when used with the `AutoTimedeltaLocator`.</span>
+<span class="sd">* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to</span>
+<span class="sd">  use. This is most useful when used with the `AutoTimedeltaLocator`.</span>
 
-<span class="sd">* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best format to use,</span>
-<span class="sd">  and to make the format as compact as possible while still having complete</span>
-<span class="sd">  date information. The formatter will make use of axis offsets to shorten the</span>
-<span class="sd">  length of the tick label when possible.</span>
+<span class="sd">* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best</span>
+<span class="sd">  format to use, and to make the format as compact as possible while still</span>
+<span class="sd">  having complete date information. The formatter will make use of axis</span>
+<span class="sd">  offsets to shorten the length of the tick label when possible.</span>
 <span class="sd">  This is most useful when used with the `AutoTimedeltaLocator`.</span>
 
-<span class="sd">* :class:`TimedeltaFormatter` : use custom timedelta format strings and a custom axis offset.</span>
+<span class="sd">* :class:`TimedeltaFormatter` : use custom timedelta format strings and a</span>
+<span class="sd">  custom axis offset.</span>
 
 
 <span class="sd">Timedelta format strings</span>

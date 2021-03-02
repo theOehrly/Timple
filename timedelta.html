@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Formatters, locators and converters &mdash; Timple 0.1.0-rc documentation</title>
+  <title>Formatters, locators and converters &mdash; Timple 0.1.0 documentation</title>
   
 
   
@@ -60,6 +60,10 @@
 
           
             
+            
+              <div class="version">
+                0.1.0
+              </div>
             
           
 
@@ -193,8 +197,8 @@ These tickers and locators are described below.</p>
 <h2>Timedelta tickers<a class="headerlink" href="#timedelta-tickers" title="Permalink to this headline">¶</a></h2>
 <p>The available date tickers are:</p>
 <ul>
-<li><p><a class="reference internal" href="#timple.timedelta.FixedTimedeltaLocator" title="timple.timedelta.FixedTimedeltaLocator"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedTimedeltaLocator</span></code></a>: Locate microseconds, seconds, minutes, hours or
-days (the ‘base unit’) in fixed intervals.
+<li><p><a class="reference internal" href="#timple.timedelta.FixedTimedeltaLocator" title="timple.timedelta.FixedTimedeltaLocator"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedTimedeltaLocator</span></code></a>: Locate microseconds, seconds, minutes, hours
+or days (the ‘base unit’) in fixed intervals.
 Tick locations will always be multiples of the selected interval.
 E.g. if the interval is 15 and the base unit ‘seconds’, the locator will
 pick 0, 15, 30, 45 seconds as tick locations:</p>
@@ -202,9 +206,9 @@ pick 0, 15, 30, 45 seconds as tick locations:</p>
 </pre></div>
 </div>
 </li>
-<li><p><a class="reference internal" href="#timple.timedelta.AutoTimedeltaLocator" title="timple.timedelta.AutoTimedeltaLocator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoTimedeltaLocator</span></code></a>: On autoscale, this class picks the best base unit
-(e.g. ‘minutes’) and the best interval to set the view limits and the tick
-locations.
+<li><p><a class="reference internal" href="#timple.timedelta.AutoTimedeltaLocator" title="timple.timedelta.AutoTimedeltaLocator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoTimedeltaLocator</span></code></a>: On autoscale, this class picks the best base
+unit (e.g. ‘minutes’) and the best interval to set the view limits and the
+tick locations.
 Tick locations will always be a multiple of the chosen interval.</p></li>
 </ul>
 </div>
@@ -212,14 +216,15 @@ Tick locations will always be a multiple of the chosen interval.</p></li>
 <h2>Timedelta formatters<a class="headerlink" href="#timedelta-formatters" title="Permalink to this headline">¶</a></h2>
 <p>The available date formatters are:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#timple.timedelta.AutoTimedeltaFormatter" title="timple.timedelta.AutoTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter</span></code></a>: attempts to figure out the best format to use. This is
-most useful when used with the <cite>AutoTimedeltaLocator</cite>.</p></li>
-<li><p><a class="reference internal" href="#timple.timedelta.ConciseTimedeltaFormatter" title="timple.timedelta.ConciseTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter</span></code></a>: also attempts to figure out the best format to use,
-and to make the format as compact as possible while still having complete
-date information. The formatter will make use of axis offsets to shorten the
-length of the tick label when possible.
+<li><p><a class="reference internal" href="#timple.timedelta.AutoTimedeltaFormatter" title="timple.timedelta.AutoTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter</span></code></a>: attempts to figure out the best format to
+use. This is most useful when used with the <cite>AutoTimedeltaLocator</cite>.</p></li>
+<li><p><a class="reference internal" href="#timple.timedelta.ConciseTimedeltaFormatter" title="timple.timedelta.ConciseTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter</span></code></a>: also attempts to figure out the best
+format to use, and to make the format as compact as possible while still
+having complete date information. The formatter will make use of axis
+offsets to shorten the length of the tick label when possible.
 This is most useful when used with the <cite>AutoTimedeltaLocator</cite>.</p></li>
-<li><p><a class="reference internal" href="#timple.timedelta.TimedeltaFormatter" title="timple.timedelta.TimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimedeltaFormatter</span></code></a> : use custom timedelta format strings and a custom axis offset.</p></li>
+<li><p><a class="reference internal" href="#timple.timedelta.TimedeltaFormatter" title="timple.timedelta.TimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimedeltaFormatter</span></code></a> : use custom timedelta format strings and a
+custom axis offset.</p></li>
 </ul>
 </div>
 <div class="section" id="timedelta-format-strings">

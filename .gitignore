@@ -4,3 +4,7 @@ __pycache__/
 result_images/
 .actrc
 act/
+dist/
+build/
+docs/_build/
+Timple.egg-info/

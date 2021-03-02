@@ -1,151 +1,169 @@
 """
-Matplotlib provides sophisticated date plotting capabilities, standing on the
-shoulders of python :mod:`datetime` and the add-on module :mod:`dateutil`.
-
-.. _date-format:
-
-Matplotlib date format
-----------------------
-
-Matplotlib represents dates using floating point numbers specifying the number
-of days since a default epoch of 1970-01-01 UTC; for example,
-1970-01-01, 06:00 is the floating point number 0.25. The formatters and
-locators require the use of `datetime.datetime` objects, so only dates between
-year 0001 and 9999 can be represented.  Microsecond precision
-is achievable for (approximately) 70 years on either side of the epoch, and
-20 microseconds for the rest of the allowable range of dates (year 0001 to
-9999). The epoch can be changed at import time via `.dates.set_epoch` or
-:rc:`dates.epoch` to other dates if necessary; see
-:doc:`/gallery/ticks_and_spines/date_precision_and_epochs` for a discussion.
-
-.. note::
-
-   Before Matplotlib 3.3, the epoch was 0000-12-31 which lost modern
-   microsecond precision and also made the default axis limit of 0 an invalid
-   datetime.  In 3.3 the epoch was changed as above.  To convert old
-   ordinal floats to the new epoch, users can do::
-
-     new_ordinal = old_ordinal + mdates.date2num(np.datetime64('0000-12-31'))
+.. currentmodule:: timple.timedelta
 
 
-There are a number of helper functions to convert between :mod:`datetime`
-objects and Matplotlib dates:
+Formatters, locators and converters
+===================================
 
-.. currentmodule:: matplotlib.dates
+
+Timple timedelta format
+-----------------------
+
+Timple represents timedeltas using floating point numbers.
+A value of 1.0 corresponds to a timedelta of 1 day.
+
+There are two helper functions for converting between timedelta-like
+values and Timple's floating point timedeltas.
 
 .. autosummary::
    :nosignatures:
 
-   datestr2num
-   date2num
-   num2date
+   timedelta2num
    num2timedelta
-   drange
-   set_epoch
-   get_epoch
 
-.. note::
 
-   Like Python's `datetime.datetime`, Matplotlib uses the Gregorian calendar
-   for all conversions between dates and floating point numbers. This practice
-   is not universal, and calendar differences can cause confusing
-   differences between what Python and Matplotlib give as the number of days
-   since 0001-01-01 and what other software and databases yield.  For
-   example, the US Naval Observatory uses a calendar that switches
-   from Julian to Gregorian in October, 1582.  Hence, using their
-   calculator, the number of days between 0001-01-01 and 2006-04-01 is
-   732403, whereas using the Gregorian calendar via the datetime
-   module we find::
+A wide range of specific and general purpose timedelta tick locators and
+formatters are provided in this module.
+You should check Matplotlib's documentation for general information on tick
+locators and formatters at :mod:`matplotlib.ticker`.
+These tickers and locators are described below.
 
-     In [1]: date(2006, 4, 1).toordinal() - date(1, 1, 1).toordinal()
-     Out[1]: 732401
 
-All the Matplotlib date converters, tickers and formatters are timezone aware.
-If no explicit timezone is provided, :rc:`timezone` is assumed.  If you want to
-use a custom time zone, pass a `datetime.tzinfo` instance with the tz keyword
-argument to `num2date`, `~.Axes.plot_date`, and any custom date tickers or
-locators you create.
-
-A wide range of specific and general purpose date tick locators and
-formatters are provided in this module.  See
-:mod:`matplotlib.ticker` for general information on tick locators
-and formatters.  These are described below.
-
-The dateutil_ module provides additional code to handle date ticking, making it
-easy to place ticks on any kinds of dates.  See examples below.
-
-.. _dateutil: https://dateutil.readthedocs.io
-
-Date tickers
-------------
-
-Most of the date tickers can locate single or multiple values.  For example::
-
-    # import constants for the days of the week
-    from matplotlib.dates import MO, TU, WE, TH, FR, SA, SU
-
-    # tick on mondays every week
-    loc = WeekdayLocator(byweekday=MO, tz=tz)
-
-    # tick on mondays and saturdays
-    loc = WeekdayLocator(byweekday=(MO, SA))
-
-In addition, most of the constructors take an interval argument::
-
-    # tick on mondays every second week
-    loc = WeekdayLocator(byweekday=MO, interval=2)
-
-The rrule locator allows completely general date ticking::
-
-    # tick every 5th easter
-    rule = rrulewrapper(YEARLY, byeaster=1, interval=5)
-    loc = RRuleLocator(rule)
+Timedelta tickers
+-----------------
 
 The available date tickers are:
 
-* `MicrosecondLocator`: Locate microseconds.
+* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours or
+  days (the 'base unit') in fixed intervals.
+  Tick locations will always be multiples of the selected interval.
+  E.g. if the interval is 15 and the base unit 'seconds', the locator will
+  pick 0, 15, 30, 45 seconds as tick locations::
 
-* `SecondLocator`: Locate seconds.
+    loc = FixedTimedeltaLocator(base_unit='seconds', interval='15')
 
-* `MinuteLocator`: Locate minutes.
+* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base unit
+  (e.g. 'minutes') and the best interval to set the view limits and the tick
+  locations.
+  Tick locations will always be a multiple of the chosen interval.
 
-* `HourLocator`: Locate hours.
 
-* `DayLocator`: Locate specified days of the month.
-
-* `WeekdayLocator`: Locate days of the week, e.g., MO, TU.
-
-* `MonthLocator`: Locate months, e.g., 7 for July.
-
-* `YearLocator`: Locate years that are multiples of base.
-
-* `RRuleLocator`: Locate using a `matplotlib.dates.rrulewrapper`.
-  `.rrulewrapper` is a simple wrapper around dateutil_'s `dateutil.rrule` which
-  allow almost arbitrary date tick specifications.  See :doc:`rrule example
-  </gallery/ticks_and_spines/date_demo_rrule>`.
-
-* `AutoDateLocator`: On autoscale, this class picks the best `DateLocator`
-  (e.g., `RRuleLocator`) to set the view limits and the tick locations.  If
-  called with ``interval_multiples=True`` it will make ticks line up with
-  sensible multiples of the tick intervals.  E.g. if the interval is 4 hours,
-  it will pick hours 0, 4, 8, etc as ticks.  This behaviour is not guaranteed
-  by default.
-
-Date formatters
----------------
+Timedelta formatters
+--------------------
 
 The available date formatters are:
 
-* `AutoDateFormatter`: attempts to figure out the best format to use.  This is
-  most useful when used with the `AutoDateLocator`.
+* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to use. This is
+  most useful when used with the `AutoTimedeltaLocator`.
 
-* `ConciseDateFormatter`: also attempts to figure out the best format to use,
+* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best format to use,
   and to make the format as compact as possible while still having complete
-  date information.  This is most useful when used with the `AutoDateLocator`.
+  date information. The formatter will make use of axis offsets to shorten the
+  length of the tick label when possible.
+  This is most useful when used with the `AutoTimedeltaLocator`.
 
-* `DateFormatter`: use `~datetime.datetime.strftime` format strings.
+* :class:`TimedeltaFormatter` : use custom timedelta format strings and a custom axis offset.
 
-* `IndexDateFormatter`: date plots with implicit *x* indexing.
+
+Timedelta format strings
+------------------------
+
+Timple uses format strings to define the format of the tick labels and axis
+offset.
+
++--------------+---------------------------+----------------------------------+
+| Directive    | Meaning                   | Example                          |
++==============+===========================+==================================+
+| ``%d``       | The number of days        | 0, 1, 2, ...                     |
++--------------+---------------------------+----------------------------------+
+| ``%h``       | Hours up to one day       | 00 ... 23                        |
+|              | (with zero-padding)       |                                  |
++--------------+---------------------------+----------------------------------+
+| ``%H``       | Total number of hours     | 0, 1, 2, .... 50, 51, ...        |
++--------------+---------------------------+----------------------------------+
+| ``%m``       | Minutes up to one hour    | 00 ... 59                        |
+|              | (with zero-padding)       |                                  |
++--------------+---------------------------+----------------------------------+
+| ``%M``       | Total number of minutes   | 0, 1, 2, ..... 100, 101, ...     |
++--------------+---------------------------+----------------------------------+
+| ``%s``       | Seconds up to one minute  | 00 ... 59                        |
+|              | (with zero-padding)       |                                  |
++--------------+---------------------------+----------------------------------+
+| ``%S``       | Total number of seconds   | 0, 1, 2, ..... 100, 101, ...     |
++--------------+---------------------------+----------------------------------+
+| ``%ms``      | Milliseconds up to one    | 000 ... 999                      |
+|              | second                    |                                  |
+|              | (with zero-padding)       |                                  |
++--------------+---------------------------+----------------------------------+
+| ``%us``      | Microseconds up to one    | 000 ... 999                      |
+|              | millisecond               |                                  |
+|              | (with zero-padding)       |                                  |
++--------------+---------------------------+----------------------------------+
+| ``%day``     | The string 'day' with     |  'day' or 'days'                 |
+|              | correct plural            |                                  |
++--------------+---------------------------+----------------------------------+
+
+
+The following two functions can be used to format timedelta values with a
+format string:
+
+.. autosummary::
+   :nosignatures:
+
+   strftimedelta
+   strftdnum
+
+
+String formatting examples::
+
+    >>> import datetime
+
+    >>> fmt = "%d %day, %h:%m"
+    >>> td = datetime.timedelta(days=10, hours=6, minutes=14)
+    >>> strftimedelta(td, fmt)
+    10 days, 06:14
+
+2.5 days as days and hours::
+
+    >>> fmt = "%d %day and %h:00"
+    >>> td = datetime.timedelta(days=2, hours=12)
+    >>> strftimedelta(td, fmt)
+    2 days and 12:00
+
+2.5 days as hours only::
+
+    >>> fmt = "%H:00"
+    >>> td = datetime.timedelta(days=2, hours=12)
+    >>> strftimedelta(td, fmt)
+    60:00
+
+Seconds with millisecond and microseconds as decimals::
+
+    >>> fmt = "%S.%ms%us seconds"
+    >>> td = datetime.timedelta(seconds=2, milliseconds=351, microseconds=16)
+    >>> strftimedelta(td, fmt)
+    2.351016 seconds
+
+
+Timedelta converters
+--------------------
+
+Timple provides two timedelta converters which can be registered through
+Matplotlib's unit conversion interface (see `matplotlib.units`):
+
+.. autosummary::
+   :nosignatures:
+
+   TimedeltaConverter
+   ConciseTimedeltaConverter
+
+Usually you don't need to interact with these converters.
+When enabling Timple, one of them is automatically registered with Matplotlib.
+(see :mod:`timple.timple`)
+
+The only difference between these converters is the default formatter that is
+used. `ConciseTimdeltaConverter` will use the `ConsciseTimedeltaFormatter` by
+default while `TimedeltaConverter` will use `AutoTimedeltaFormatter`.
 """
 import datetime
 import string
@@ -214,7 +232,7 @@ def _td64_to_ordinalf(d):
 
 def timedelta2num(t):
     """
-    Convert timedelta objects to Matplotlib timedeltas.
+    Convert timedelta objects to Timple's timedeltas.
 
     Parameters
     ----------
@@ -367,13 +385,13 @@ def strftimedelta(td, fmt_str):
 
 def strftdnum(td_num, fmt_str):
     """
-    Return a string representing a matplotlib internal float based timedelta,
+    Return a string representing a float based timedelta,
     controlled by an explicit format string.
 
     Arguments
     ---------
     td_num : float
-        timedelta in matplotlib float representation
+        timedelta in timple float representation
     fmt_str : str
         format string
     """
@@ -395,10 +413,16 @@ class TimedeltaFormatter(ticker.Formatter):
 
     Examples
     --------
-    .. plot::
+    Example plot::
 
+        import numpy as np
         import datetime
-        import matplotlib.dates as mdates
+        import matplotlib.pyplot as plt
+        import timple
+        import timple.timedelta as tmpldelta
+
+        tmpl = timple.Timple()
+        tmpl.enable()
 
         base = datetime.timedelta(days=100)
         timedeltas = np.array([base + datetime.timedelta(minutes=(4 * i))
@@ -408,14 +432,16 @@ class TimedeltaFormatter(ticker.Formatter):
         y = np.cumsum(np.random.randn(N))
 
         fig, ax = plt.subplots(constrained_layout=True)
-        locator = mdates.AutoTimedeltaLocator()
-        formatter = mdates.TimedeltaFormatter("%H:%m", offset_on='days',
-                                              offset_fmt="%d %day")
+        locator = tmpldelta.AutoTimedeltaLocator()
+        formatter = tmpldelta.TimedeltaFormatter("%H:%m", offset_on='days',
+                                                 offset_fmt="%d %day")
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(formatter)
 
         ax.plot(timedeltas, y)
         ax.set_title('Timedelta Formatter with Offset on Days')
+
+    .. image:: _static/timedelta_formatter_example.svg
     """
     # TODO explain format strings somewhere
     def __init__(self, fmt, *, offset_on=None, offset_fmt=None, usetex=None):
@@ -436,7 +462,7 @@ class TimedeltaFormatter(ticker.Formatter):
             A format string or a callable for formatting the offset string.
             This also requires ``offset_on`` to be specified.
 
-        usetex : bool, default: :rc:`text.usetex`
+        usetex : bool, default: `text.usetex` from Matplotlib's rcParams
             To enable/disable the use of TeX's math mode for rendering the
             results of the formatter.
         """
@@ -589,7 +615,7 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
     show_offset : bool, default: True
         Whether to show the offset or not.
 
-    usetex : bool, default: :rc:`text.usetex`
+    usetex : bool, default: `text.usetex` from Matplotlib's rcParams
         To enable/disable the use of TeX's math mode for rendering the results
         of the formatter.
     """
@@ -702,7 +728,7 @@ class AutoTimedeltaFormatter(ticker.Formatter):
         The default format to use if none of the values in ``self.scaled``
         are greater than the unit returned by ``locator._get_unit()``.
 
-    usetex : bool, default: :rc:`text.usetex`
+    usetex : bool, default: `text.usetex` from Matplotlib's rcParams
         To enable/disable the use of TeX's math mode for rendering the
         results of the formatter. If any entries in ``self.scaled`` are set
         as functions, then it is up to the customized function to enable or
@@ -1084,7 +1110,8 @@ class AutoTimedeltaLocator(TimedeltaLocator):
 
 class TimedeltaConverter(units.ConversionInterface):
     """
-    Converter for `datetime.timedelta` and `numpy.timedelta64` data.
+    Converter for `datetime.timedelta`, `numpy.timedelta64` and
+    `pandas.Timedelta` data.
 
     The 'unit' tag for such data is None.
     """
@@ -1118,7 +1145,12 @@ class TimedeltaConverter(units.ConversionInterface):
 
 
 class ConciseTimedeltaConverter(TimedeltaConverter):
-    # docstring inherited
+    """
+    Converter for `datetime.timedelta`, `numpy.timedelta64` and
+    `pandas.Timedelta` data (prefers short tick formats).
+
+    The 'unit' tag for such data is None.
+    """
     def __init__(self, formats=None, offset_formats=None, show_offset=True):
         super().__init__()
         self._formats = formats

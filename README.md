@@ -16,9 +16,9 @@ Ticks can be formatted into a more readable time format. For example,
 something like ``185`` seconds can be turned into ``3:05`` minute:seconds
 representation.
 
-#### Example images:
+Example plot:
 
-TBD
+![image of example plot](docs/_static/intro_example.svg)
 
 
 #### Features

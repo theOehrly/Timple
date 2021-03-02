@@ -22,5 +22,5 @@ def clean_state():
     import sys
     modules = list(sys.modules.keys())
     for m in modules:
-        if 'matplotlib' in m or 'timple' in m:
+        if 'matplotlib' in m or 'timple' in m or 'pandas' in m:
             del sys.modules[m]

@@ -7,6 +7,11 @@ import datetime
 # EACH individual test. Therefore, imports for timple and matplotlib
 # need to be done inside a test and on a per test basis
 
+# NOTE 2:
+# DO NOT make relative imports here
+# WRONG: import core
+# RIGHT: from timple import core
+
 
 def test_enable_disable():
     import timple
@@ -37,7 +42,7 @@ def test_mpl_default_functionality():
     import matplotlib as mpl
     import timple
     tmpl = timple.Timple()
-    tmpl.enable()
+    tmpl.enable(pd_nat_dates_support=True)
 
     ret = 0
 
@@ -53,10 +58,28 @@ def test_mpl_default_functionality():
                         "Have you installed matplotlib from sources?")
 
 
-def test_date2num_pandas_nat(pd):
+def test_natively_supported_pandas_to_numpy(pd):
     import timple
-    import matplotlib.dates as mdates
     tmpl = timple.Timple()
+    tmpl.enable()
+
+    from matplotlib.units import _is_natively_supported
+
+    series = pd.Series((pd.Timedelta(days=1), pd.NaT))
+    assert not _is_natively_supported(series)
+
+    dataframe = pd.DataFrame(
+        {'data1': (1, 2),
+         'data2': (pd.Timedelta(days=1), pd.Timedelta(days=2))}
+    )
+    assert not _is_natively_supported(dataframe['data2'].to_numpy())
+
+
+def test_td2num_pandas_nat(pd):
+    import timple
+    tmpl = timple.Timple()
+    import matplotlib.dates as mdates
+
     test_case = [pd.Timestamp('1970-01-03'), pd.NaT]
     expected = [2.0, np.nan]
 

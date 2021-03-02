@@ -7,9 +7,14 @@ import pytest
 # EACH individual test. Therefore, imports for timple and matplotlib
 # need to be done inside a test and on a per test basis
 
+# NOTE 2:
+# DO NOT make relative imports here (else import cleanup wont work)
+# WRONG: import core
+# RIGHT: from timple import core
+
 
 def test_strftimedelta():
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     cases = [
         (datetime.timedelta(days=1), "%d %day, %h:%m", "1 day, 00:00"),
@@ -29,7 +34,7 @@ def test_strftimedelta():
 
 def test_timdelta_formatter():
     from matplotlib import pyplot as plt
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     def _create_timedelta_locator(td1, td2, fmt, kwargs):
         fig, ax = plt.subplots()
@@ -86,7 +91,7 @@ def test_timdelta_formatter():
 
 
 def test_timedelta_formatter_usetex():
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     formatter = tmpldelta.TimedeltaFormatter("%h:%m", offset_on='days',
                                           offset_fmt="%d %day", usetex=True)
@@ -116,7 +121,7 @@ def test_timedelta_formatter_usetex():
 
 def test_concise_timedelta_formatter():
     from matplotlib import pyplot as plt
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     def _create_concise_timedelta_locator(td1, td2):
         fig, ax = plt.subplots()
@@ -168,7 +173,7 @@ def test_concise_timedelta_formatter():
 
 def test_auto_timedelta_formatter():
     from matplotlib import pyplot as plt
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     def _create_auto_timedelta_locator(td1, td2):
         fig, ax = plt.subplots()
@@ -223,7 +228,7 @@ def test_auto_timedelta_formatter():
 
 
 def test_timedelta2num(pd):
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     cases = ((1, datetime.timedelta(days=1)),
              (0.25, datetime.timedelta(hours=6)),
@@ -249,7 +254,7 @@ def test_timedelta2num(pd):
 
 
 def test_timedelta2num_pandas_nat(pd):
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     cases = (
         (pd.NaT, np.nan),
@@ -261,7 +266,7 @@ def test_timedelta2num_pandas_nat(pd):
 
 def test_auto_timedelta_locator():
     import matplotlib.dates as mdates
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     def _create_auto_timedelta_locator(delta1, delta2):
         locator = tmpldelta.AutoTimedeltaLocator()
@@ -315,7 +320,7 @@ def test_auto_timedelta_locator():
 
 
 def test_fixed_timedelta_locator_allowed_base():
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     for base in tmpldelta.TimedeltaLocator().base_units:
         # should not raise
@@ -327,7 +332,7 @@ def test_fixed_timedelta_locator_allowed_base():
 
 def test_fixed_timedelta_locator():
     import matplotlib.dates as mdates
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     results = [
         ('days', 0.5, 0.5, ['12:00:00', '1 day, 0:00:00',
@@ -348,7 +353,7 @@ def test_fixed_timedelta_locator():
 
 def test_auto_modified_intervald():
     import matplotlib.dates as mdates
-    from .. import timedelta as tmpldelta
+    import timple.timedelta as tmpldelta
 
     locator = tmpldelta.AutoTimedeltaLocator()
     locator.intervald['hours'] = [3]

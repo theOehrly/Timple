@@ -94,7 +94,7 @@ def test_timedelta_formatter_usetex():
     import timple.timedelta as tmpldelta
 
     formatter = tmpldelta.TimedeltaFormatter("%h:%m", offset_on='days',
-                                          offset_fmt="%d %day", usetex=True)
+                                             offset_fmt="%d %day", usetex=True)
     values = [datetime.timedelta(days=0, hours=12),
               datetime.timedelta(days=1, hours=0),
               datetime.timedelta(days=1, hours=12),

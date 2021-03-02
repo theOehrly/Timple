@@ -16,7 +16,7 @@ def get_patched_date2num(mpl):
         -------
         float or sequence of floats
             Number of days since the epoch.  See `.get_epoch` for the
-            epoch, which can be changed by :rc:`date.epoch` or `.set_epoch`.  If
+            epoch, which can be changed by :rc:`date.epoch` or `.set_epoch`. If
             the epoch is "1970-01-01T00:00:00" (default) then noon Jan 1 1970
             ("1970-01-01T12:00:00") returns 0.5.
 
@@ -44,8 +44,8 @@ def get_patched_date2num(mpl):
         if hasattr(d.take(0), 'value'):
             # elements are pandas objects; temporarily convert data to numbers
             # pandas nat is defined as the minimum value of int64,
-            # replace all 'min int' values with the string 'nat' and convert the
-            # array to the dtype of the first non-nat value
+            # replace all 'min int' values with the string 'nat' and convert
+            # the array to the dtype of the first non-nat value
             values = np.asarray([x.value for x in d], dtype='object')
             nat_mask = (np.iinfo('int64').min == values)
             if not all(nat_mask):
@@ -63,7 +63,8 @@ def get_patched_date2num(mpl):
             tzi = getattr(d[0], 'tzinfo', None)
             if tzi is not None:
                 # make datetime naive:
-                d = [dt.astimezone(mpl.dates.UTC).replace(tzinfo=None) for dt in d]
+                d = [dt.astimezone(mpl.dates.UTC).replace(tzinfo=None)
+                     for dt in d]
                 d = np.asarray(d)
             d = d.astype('datetime64[us]')
 
@@ -86,7 +87,7 @@ def get_patched_is_natively_supported(mpl):
         if isinstance(x, patch_types):
             return False
         if isinstance(x, np.ndarray) and np.issubdtype(x.dtype, 'timedelta64'):
-                return False
+            return False
         return mpl_native(x, *args, **kwargs)
 
     return is_natively_supported

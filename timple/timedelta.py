@@ -34,17 +34,17 @@ Timedelta tickers
 
 The available date tickers are:
 
-* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours or
-  days (the 'base unit') in fixed intervals.
+* :class:`FixedTimedeltaLocator`: Locate microseconds, seconds, minutes, hours
+  or days (the 'base unit') in fixed intervals.
   Tick locations will always be multiples of the selected interval.
   E.g. if the interval is 15 and the base unit 'seconds', the locator will
   pick 0, 15, 30, 45 seconds as tick locations::
 
     loc = FixedTimedeltaLocator(base_unit='seconds', interval='15')
 
-* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base unit
-  (e.g. 'minutes') and the best interval to set the view limits and the tick
-  locations.
+* :class:`AutoTimedeltaLocator`: On autoscale, this class picks the best base
+  unit (e.g. 'minutes') and the best interval to set the view limits and the
+  tick locations.
   Tick locations will always be a multiple of the chosen interval.
 
 
@@ -53,16 +53,17 @@ Timedelta formatters
 
 The available date formatters are:
 
-* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to use. This is
-  most useful when used with the `AutoTimedeltaLocator`.
+* :class:`AutoTimedeltaFormatter`: attempts to figure out the best format to
+  use. This is most useful when used with the `AutoTimedeltaLocator`.
 
-* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best format to use,
-  and to make the format as compact as possible while still having complete
-  date information. The formatter will make use of axis offsets to shorten the
-  length of the tick label when possible.
+* :class:`ConciseTimedeltaFormatter`: also attempts to figure out the best
+  format to use, and to make the format as compact as possible while still
+  having complete date information. The formatter will make use of axis
+  offsets to shorten the length of the tick label when possible.
   This is most useful when used with the `AutoTimedeltaLocator`.
 
-* :class:`TimedeltaFormatter` : use custom timedelta format strings and a custom axis offset.
+* :class:`TimedeltaFormatter` : use custom timedelta format strings and a
+  custom axis offset.
 
 
 Timedelta format strings

@@ -34,8 +34,9 @@ The full documentation can be found here: https://theoehrly.github.io/Timple/
 - Supports ``numpy.timedelta64``, ``datetime.timedelta``, ``pandas.Timedelta``
   
 Additionally
-- Support for ``pandas.NaT`` when plotting timedelta and optionally when
-    plotting date values too.
+
+- Support for ``pandas.NaT`` when plotting timedelta and optionally when 
+  plotting date values too.
   
 
 ## Usage
@@ -45,15 +46,15 @@ register Timple's timedelta converter. By default, Timple's automatic
 locators and formatters will be used to determine the tick locations and 
 format best suited for the plotted data. Further customization is possible.
 
-```
-import matplotlib.pyplot as plt
-import timple
 
-tmpl = timple.Timple()
-tmpl.enable()
+    import matplotlib.pyplot as plt
+    import timple
+    
+    tmpl = timple.Timple()
+    tmpl.enable()
+    
+    # you can now just use matplotlib as always
+    
+    plt.plot(...some timedelta related data...)
+    plt.show()
 
-# you can now just use matplotlib as always
-
-plt.plot(...some timedelta related data...)
-plt.show()
-```

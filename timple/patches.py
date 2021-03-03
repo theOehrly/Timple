@@ -95,7 +95,8 @@ def get_patched_is_natively_supported(mpl):
                 if hasattr(x[0], 'value'):
                     # pandas nat is defined as the minimum value of int64,
                     # remove all values which are equal to min int
-                    values = np.asarray([elem.value for elem in x], dtype='object')
+                    values = np.asarray([elem.value for elem in x],
+                                        dtype='object')
                     mask = (np.iinfo('int64').min == values)
                     x = x[~mask]
             except IndexError:

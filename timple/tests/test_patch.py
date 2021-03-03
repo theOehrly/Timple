@@ -1,13 +1,11 @@
 import pytest
 import numpy as np
 import datetime
+import sys
+import subprocess
+
 
 # NOTE:
-# imports for timple and matplotlib are automatically cleaned up before
-# EACH individual test. Therefore, imports for timple and matplotlib
-# need to be done inside a test and on a per test basis
-
-# NOTE 2:
 # DO NOT make relative imports here
 # WRONG: import core
 # RIGHT: from timple import core
@@ -39,23 +37,27 @@ def test_enable_disable():
 
 
 def test_mpl_default_functionality():
+    # run this test in a subprocess to ensure a clean state
+    ret = subprocess.call(
+        'python -c '
+        '"'
+        'from timple.tests import test_patch; '
+        'test_patch._subprocess_matplotlib_subtests()'
+        '"', shell=True)
+    assert ret == 0
+
+
+def _subprocess_matplotlib_subtests():
     import matplotlib as mpl
     import timple
     tmpl = timple.Timple()
     tmpl.enable(pd_nat_dates_support=True)
-
+    # to be run in a subprocess
     ret = 0
-
-    print("\n\n#####\nRunning subtests for matplotlib")
-    print("Testing 'matplotlib.tests.test_dates'")
     ret += mpl.test(verbosity=1, argv=['matplotlib.tests.test_dates']).value
-
-    print("\nTesting 'matplotlib.tests.test_units'")
     ret += mpl.test(verbosity=1, argv=['matplotlib.tests.test_units']).value
-
     if ret != 0:
-        raise Exception("Subtests for matplotlib failed!"
-                        "Have you installed matplotlib from sources?")
+        sys.exit(1)
 
 
 def test_natively_supported_pandas_to_numpy(pd):

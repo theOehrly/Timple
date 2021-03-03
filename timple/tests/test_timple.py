@@ -3,11 +3,6 @@ import numpy as np
 import pytest
 
 # NOTE:
-# imports for timple and matplotlib are automatically cleaned up before
-# EACH individual test. Therefore, imports for timple and matplotlib
-# need to be done inside a test and on a per test basis
-
-# NOTE 2:
 # DO NOT make relative imports here (else import cleanup wont work)
 # WRONG: import core
 # RIGHT: from timple import core
@@ -265,7 +260,7 @@ def test_timedelta2num_pandas_nat(pd):
 
 
 def test_plot_pandas_nat(pd):
-    import matplotlib.pyplot as plt#
+    import matplotlib.pyplot as plt
     import timple
     tmpl = timple.Timple()
     tmpl.enable()

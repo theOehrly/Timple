@@ -264,6 +264,16 @@ def test_timedelta2num_pandas_nat(pd):
         np.testing.assert_equal(tmpldelta.timedelta2num(x), expected)
 
 
+def test_plot_pandas_nat(pd):
+    import matplotlib.pyplot as plt#
+    import timple
+    tmpl = timple.Timple()
+    tmpl.enable()
+
+    data = (pd.NaT, pd.Timedelta(seconds=1), pd.Timedelta(seconds=2))
+    plt.plot(data, (1, 2, 3))
+
+
 def test_auto_timedelta_locator():
     import matplotlib.dates as mdates
     import timple.timedelta as tmpldelta

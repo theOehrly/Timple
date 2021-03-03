@@ -115,6 +115,9 @@ class Timple:
         revert_converters = self._add_converters(self._formatter_args)
         self._revert_funcs.append(revert_converters)
 
+        revert_registry = self._patch_registry()
+        self._revert_funcs.append(revert_registry)
+
         if pd_nat_dates_support:
             revert_date2num = self._patch_date2num()
             self._revert_funcs.append(revert_date2num)
@@ -169,6 +172,21 @@ class Timple:
 
         def revert():
             munits._is_natively_supported = orig_func
+
+        return revert
+
+    def _patch_registry(self):
+        # patch matplotlib.units.registry.get_converter
+        # mainly necessary for special case whr e first element of an array
+        # is pandas.NaT (pandas.NaT is always an instance of datetime.datetime
+        # and therefore not representative of the arrays datatype
+        orig_func = munits.Registry.get_converter
+
+        patched = patches.get_patched_registry(mpl)
+        munits.Registry.get_converter = patched
+
+        def revert():
+            munits.Registry.get_converter = orig_func
 
         return revert
 

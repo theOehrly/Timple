@@ -86,8 +86,40 @@ def get_patched_is_natively_supported(mpl):
         patch_types = (datetime.timedelta, np.timedelta64)
         if isinstance(x, patch_types):
             return False
-        if isinstance(x, np.ndarray) and np.issubdtype(x.dtype, 'timedelta64'):
-            return False
+        if np.iterable(x):
+            if (isinstance(x, np.ndarray)
+                    and np.issubdtype(x.dtype, 'timedelta64')):
+                return False
+
+            try:
+                if hasattr(x[0], 'value'):
+                    # pandas nat is defined as the minimum value of int64,
+                    # remove all values which are equal to min int
+                    values = np.asarray([elem.value for elem in x], dtype='object')
+                    mask = (np.iinfo('int64').min == values)
+                    x = x[~mask]
+            except IndexError:
+                pass
+
         return mpl_native(x, *args, **kwargs)
 
     return is_natively_supported
+
+
+def get_patched_registry(mpl):
+    mpl_native = mpl.units.Registry.get_converter
+
+    def get_converter(self, x):
+        try:
+            if np.iterable(x) and hasattr(x[0], 'value'):
+                # pandas nat is defined as the minimum value of int64,
+                # remove all values which are equal to min int
+                values = np.asarray([elem.value for elem in x], dtype='object')
+                mask = (np.iinfo('int64').min == values)
+                x = x[~mask]
+        except IndexError:
+            pass
+
+        return mpl_native(self, x)
+
+    return get_converter

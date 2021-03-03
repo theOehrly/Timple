@@ -82,11 +82,12 @@ class Timple:
         for 'date.converter'. If this value does not exist it will fall
         back to 'auto'.
     """
-    def __init__(self, converter='default'):
+    def __init__(self, converter='default', formatter_args=None):
         if converter not in ('default', 'auto', 'concise'):
             raise ValueError("Invalid value for keyword argument 'converter'")
         self._revert_funcs = list()
         self._converter = converter
+        self._formatter_args = formatter_args
 
     def enable(self, pd_nat_dates_support=False):
         """
@@ -111,7 +112,7 @@ class Timple:
         revert_units_patch = self._patch_supported_units()
         self._revert_funcs.append(revert_units_patch)
 
-        revert_converters = self._add_converters()
+        revert_converters = self._add_converters(self._formatter_args)
         self._revert_funcs.append(revert_converters)
 
         if pd_nat_dates_support:
@@ -126,7 +127,7 @@ class Timple:
         for revert in self._revert_funcs:
             revert()
 
-    def _add_converters(self):
+    def _add_converters(self, formatter_args):
         # register the appropriate matplotlib converter
         # return a function that reverts this change
         if self._converter == 'default':
@@ -145,7 +146,7 @@ class Timple:
         else:
             timedelta_converter = TimedeltaConverter
 
-        conv_inst = timedelta_converter()
+        conv_inst = timedelta_converter(formatter_args)
         munits.registry[np.timedelta64] = conv_inst
         munits.registry[datetime.timedelta] = conv_inst
 

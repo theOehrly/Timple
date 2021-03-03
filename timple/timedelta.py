@@ -72,6 +72,10 @@ Timedelta format strings
 Timple uses format strings to define the format of the tick labels and axis
 offset.
 
+The format strings for timedeltas defined here are similar to
+`datetime.datetime.strftime` format strings but they are **not** the
+same and **not** compatible.
+
 +--------------+---------------------------+----------------------------------+
 | Directive    | Meaning                   | Example                          |
 +==============+===========================+==================================+
@@ -165,6 +169,10 @@ When enabling Timple, one of them is automatically registered with Matplotlib.
 The only difference between these converters is the default formatter that is
 used. `ConciseTimdeltaConverter` will use the `ConsciseTimedeltaFormatter` by
 default while `TimedeltaConverter` will use `AutoTimedeltaFormatter`.
+
+
+API Reference
+-------------
 """
 import datetime
 import string
@@ -304,36 +312,6 @@ def num2timedelta(x):
     return _ordinalf_to_timedelta_np_vectorized(x).tolist()
 
 
-# def pd_timedelta2np(t):
-#     """
-#     Convert `pandas.Timedelta` objects to `numpy.timedelta64`
-#
-#     Parameters
-#     ----------
-#     t: `pandas.Timedelta` or `pandas.NaT` or sequences of these
-#
-#     Returns
-#     -------
-#     `numpy.timedelta64` or sequence of `numpy.timedelta64`
-#     """
-#     iterable = np.iterable(t)
-#     if not iterable:
-#         t = [t]
-#
-#     conv = list()
-#     for val in t:
-#         c = val.to_numpy()
-#         if np.isnat(c):
-#             # pandas.NaT.to_numpy() returns datetime64('nat')
-#             # but here we need timedelta64('nat')
-#             conv.append(np.timedelta64('nat'))
-#         else:
-#             conv.append(c)
-#
-#     t = np.asarray(conv)
-#     return t if iterable else t[0]
-
-
 class _TimedeltaFormatTemplate(string.Template):
     # formatting template for datetime-like formatter strings
     delimiter = '%'
@@ -408,9 +386,9 @@ class TimedeltaFormatter(ticker.Formatter):
     This `.Formatter` formats ticks according to a fixed specification.
     Ticks can optionally be offset to generate shorter tick labels.
 
-    .. note:: The format string for timedeltas works similar to a
-        `~datetime.datetime.strftime` format string but they are NOT the
-        same and NOT compatible.
+    .. note:: The format strings for timedeltas work similar to
+      `datetime.datetime.strftime` format strings but they are **not** the
+      same and **not** compatible.
 
     Examples
     --------
@@ -443,12 +421,10 @@ class TimedeltaFormatter(ticker.Formatter):
         ax.set_title('Timedelta Formatter with Offset on Days')
 
     .. image:: _static/timedelta_formatter_example.svg
-    """
-    # TODO explain format strings somewhere
-    def __init__(self, fmt, *, offset_on=None, offset_fmt=None, usetex=None):
-        """
-        Parameters
-        ----------
+
+
+    Parameters
+    ----------
         fmt : str or callable
             a format string or a callable for formatting the tick values
 
@@ -459,14 +435,19 @@ class TimedeltaFormatter(ticker.Formatter):
             If ``offset_on`` is set but ``offset_fmt`` is not, the offset will
             be applied but not shown.
 
-        offset_fmt : str or callable
+        offset_fmt : str or callable, optional
             A format string or a callable for formatting the offset string.
             This also requires ``offset_on`` to be specified.
+
+        show_offset_zero : bool, optional
+            Show axis offset if the offset is zero.
 
         usetex : bool, default: `text.usetex` from Matplotlib's rcParams
             To enable/disable the use of TeX's math mode for rendering the
             results of the formatter.
-        """
+    """
+    def __init__(self, fmt, *, offset_on=None, offset_fmt=None,
+                 show_offset_zero=True, usetex=None):
         super().__init__()
         if (offset_on is None) and (offset_fmt is not None):
             raise ValueError("'offset_fmt' requires 'offset_on to be "
@@ -474,6 +455,7 @@ class TimedeltaFormatter(ticker.Formatter):
         self.fmt = fmt
         self.offset_fmt = offset_fmt
         self.offset_on = offset_on
+        self.show_offset_zero = show_offset_zero
         self.offset_string = ''
         self._usetex = (usetex if usetex is not None else
                         mpl.rcParams['text.usetex'])
@@ -541,9 +523,10 @@ class TimedeltaFormatter(ticker.Formatter):
         if self._usetex:
             result = [_wrap_in_tex(label) for label in result]
 
-        if self.offset_fmt is not None:
+        if self.offset_fmt is not None and (self.show_offset_zero or offset):
             # format the applied offset itself so it can be displayed
-            # as axis offset
+            # as axis offset; only show offset if the offset value is not
+            # zero or if zero offset are set to be shown
             if isinstance(self.offset_fmt, str):
                 offset_str = strftdnum(offset, self.offset_fmt)
             elif callable(self.offset_fmt):
@@ -556,6 +539,9 @@ class TimedeltaFormatter(ticker.Formatter):
                 offset_str = _wrap_in_tex(offset_str)
 
             self.offset_string = offset_str
+        else:
+            # reset offset string
+            self.offset_string = ""
 
         return result
 
@@ -587,7 +573,6 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
 
     formats : list of 5 strings, optional
         Format strings for tick labels.
-        TODO: ref explanation of codes
         The default is::
 
             ["%d %day",
@@ -616,15 +601,19 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
     show_offset : bool, default: True
         Whether to show the offset or not.
 
+    show_offset_zero : bool, optional
+        Show axis offset if the offset is zero.
+
     usetex : bool, default: `text.usetex` from Matplotlib's rcParams
         To enable/disable the use of TeX's math mode for rendering the results
         of the formatter.
     """
     def __init__(self, locator, formats=None, offset_formats=None,
-                 show_offset=True, *, usetex=None):
+                 show_offset=True, show_offset_zero=True, *, usetex=None):
         self._locator = locator
-        self.defaultfmt = "%d %days"  # TODO
+        self.defaultfmt = "%d %day"
         self.show_offset = show_offset
+        self.show_offset_zero = show_offset_zero
 
         # 5 formatting levels
         self._levels = (1,
@@ -633,7 +622,7 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
                         1/SEC_PER_DAY,
                         1/MUSECONDS_PER_DAY)
         if formats:
-            if len(formats) != 6:
+            if len(formats) != 5:
                 raise ValueError('formats argument must be a list of '
                                  '5 format strings (or None)')
             self.formats = formats
@@ -649,7 +638,8 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
         if offset_formats:
             if len(offset_formats) != 5:
                 raise ValueError('offset_formats argument must be a list of '
-                                 '5 format strings (or None)')
+                                 '5 pairs of (format string, offset position)'
+                                 '(or None)')
             self.offset_formats = offset_formats
         else:
             self.offset_formats = [
@@ -664,8 +654,8 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
                         mpl.rcParams['text.usetex'])
 
     def __call__(self, x, pos=None):
-        formatter = TimedeltaFormatter(self.defaultfmt, usetex=self._usetex)
-        return formatter(x, pos=pos)
+        # temporarily wrap x in a list and format with self.format_ticks
+        return self.format_ticks([x, ])[0]
 
     def format_ticks(self, values):
         try:
@@ -679,6 +669,7 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
         offset_fmt, offset_on = self.offset_formats[i]
         formatter = TimedeltaFormatter(fmt, offset_fmt=offset_fmt,
                                        offset_on=offset_on,
+                                       show_offset_zero=self.show_offset_zero,
                                        usetex=self._usetex)
         formatter.set_axis(self.axis)
         labels = formatter.format_ticks(values)
@@ -734,11 +725,15 @@ class AutoTimedeltaFormatter(ticker.Formatter):
         results of the formatter. If any entries in ``self.scaled`` are set
         as functions, then it is up to the customized function to enable or
         disable TeX's math mode itself.
+
+    scaled : dict, optional
+        Allows to overwrite the `scaled` instance attribute at creation.
+        The default values are **updated** with the values of this argument.
+        You can therefore only add or modify exisiting key-value pairs through
+        this argument.
     """
-    def __init__(self, locator, defaultfmt='%d %day, %h:%m', *, usetex=None):
-        """
-        Autoformat the timedelta labels.
-        """
+    def __init__(self, locator, defaultfmt='%d %day, %h:%m', scaled=None, *,
+                 usetex=None):
         self._locator = locator
         self.defaultfmt = defaultfmt
         self._usetex = (usetex if usetex is not None else
@@ -752,11 +747,21 @@ class AutoTimedeltaFormatter(ticker.Formatter):
             1e3 / MUSECONDS_PER_DAY: '%d %day, %h:%m:%s.%ms',
             1 / MUSECONDS_PER_DAY: '%d %day, %h:%m:%s.%ms%us',
         }
+        if scaled is not None:
+            try:
+                self.scaled.update(scaled)
+            except TypeError:
+                raise TypeError('scaled needs to be a dictionary that maps '
+                                'format strings to tick scales!')
 
     def _set_locator(self, locator):
         self._locator = locator
 
-    def __call__(self, x, pos=0):
+    def __call__(self, x, pos=None):
+        # temporarily wrap x in a list and format with self.format_ticks
+        return self.format_ticks([x, ])[0]
+
+    def format_ticks(self, values):
         try:
             locator_unit_scale = float(self._locator._get_unit())
         except AttributeError:
@@ -767,10 +772,10 @@ class AutoTimedeltaFormatter(ticker.Formatter):
                    self.defaultfmt)
 
         if isinstance(fmt, str):
-            self._formatter = TimedeltaFormatter(fmt, usetex=self._usetex)
-            result = self._formatter(x, pos)
+            _formatter = TimedeltaFormatter(fmt, usetex=self._usetex)
+            result = [_formatter(val) for val in values]
         elif callable(fmt):
-            result = fmt(x, pos)
+            result = [fmt(val) for val in values]
         else:
             raise TypeError('Unexpected type passed to {0!r}.'.format(self))
 
@@ -900,14 +905,14 @@ class FixedTimedeltaLocator(TimedeltaLocator):
 
       # Ticks every 20 seconds
       locator = TimedeltaLocatorManual('seconds', 20)
-    """
-    def __init__(self, base_unit, interval):
-        """
-        Parameters
-        ----------
+
+
+    Parameters
+    ----------
         base_unit: {'days', 'hours', 'minutes', 'seconds', 'microseconds'}
         interval: `int` or `float`
-        """
+    """
+    def __init__(self, base_unit, interval):
         super().__init__()
         if base_unit not in self.base_units:
             raise ValueError(f"base must be one of {self.base_units}")
@@ -982,15 +987,13 @@ class AutoTimedeltaLocator(TimedeltaLocator):
 
         For forcing ticks in one specific interval only,
         :class:`FixedTimedeltaLocator` might be preferred.
-    """
-    def __init__(self, minticks=5, maxticks=None):
-        """
-        Parameters
-        ----------
+
+    Parameters
+    ----------
         minticks : int
             The minimum number of ticks desired; controls whether ticks occur
             daily, hourly, etc.
-        maxticks : int
+        maxticks : dict or int
             The maximum number of ticks desired; controls the interval between
             ticks (ticking every other, every 3, etc.).  For fine-grained
             control, this can be a dictionary mapping individual base units
@@ -999,7 +1002,8 @@ class AutoTimedeltaLocator(TimedeltaLocator):
             appropriate to the format chosen in `AutoDateFormatter`. Any
             frequency not specified in this dictionary is given a default
             value.
-        """
+    """
+    def __init__(self, minticks=5, maxticks=None):
         super().__init__()
         self.intervald = {
             'days': [1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000, 2000,
@@ -1115,10 +1119,21 @@ class TimedeltaConverter(units.ConversionInterface):
     `pandas.Timedelta` data.
 
     The 'unit' tag for such data is None.
+
+    Parameters
+    ----------
+    formatter_args : dict, optional
+        A dictionary of keyword arguments which are passed on to
+        :class:`AutoTimedeltaFormatter` instances.
     """
 
-    def __init__(self):
+    def __init__(self, formatter_args=None):
         super().__init__()
+
+        if not formatter_args:
+            self.formatter_args = {}
+        else:
+            self.formatter_args = formatter_args
 
     def axisinfo(self, unit, axis):
         """
@@ -1127,7 +1142,7 @@ class TimedeltaConverter(units.ConversionInterface):
         The *unit* and *axis* arguments are required but not used.
         """
         majloc = AutoTimedeltaLocator()
-        majfmt = AutoTimedeltaFormatter(majloc)
+        majfmt = AutoTimedeltaFormatter(majloc, **self.formatter_args)
         datemin = datetime.timedelta(days=1)
         datemax = datetime.timedelta(days=2)
 
@@ -1151,19 +1166,25 @@ class ConciseTimedeltaConverter(TimedeltaConverter):
     `pandas.Timedelta` data (prefers short tick formats).
 
     The 'unit' tag for such data is None.
+
+    Parameters
+    ----------
+    formatter_args : dict, optional
+        A dictionary of keyword arguments which are passed on to
+        :class:`ConciseTimedeltaFormatter` instances.
+
     """
-    def __init__(self, formats=None, offset_formats=None, show_offset=True):
+    def __init__(self, formatter_args=None):
         super().__init__()
-        self._formats = formats
-        self._offset_formats = offset_formats
-        self._show_offset = show_offset
+        if not formatter_args:
+            self.formatter_args = {}
+        else:
+            self.formatter_args = formatter_args
 
     def axisinfo(self, unit, axis):
         # docstring inherited
         majloc = AutoTimedeltaLocator()
-        majfmt = ConciseTimedeltaFormatter(majloc, formats=self._formats,
-                                           offset_formats=self._offset_formats,
-                                           show_offset=self._show_offset)
+        majfmt = ConciseTimedeltaFormatter(majloc, **self.formatter_args)
         datemin = datetime.timedelta(days=1)
         datemax = datetime.timedelta(days=2)
 

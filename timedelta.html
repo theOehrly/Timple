@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Formatters, locators and converters &mdash; Timple 0.1.0 documentation</title>
+  <title>Formatters, locators and converters &mdash; Timple 0.1.1 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
             
           
@@ -96,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#timedelta-formatters">Timedelta formatters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#timedelta-format-strings">Timedelta format strings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#timedelta-converters">Timedelta converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-reference">API Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -231,6 +232,9 @@ custom axis offset.</p></li>
 <h2>Timedelta format strings<a class="headerlink" href="#timedelta-format-strings" title="Permalink to this headline">¶</a></h2>
 <p>Timple uses format strings to define the format of the tick labels and axis
 offset.</p>
+<p>The format strings for timedeltas defined here are similar to
+<cite>datetime.datetime.strftime</cite> format strings but they are <strong>not</strong> the
+same and <strong>not</strong> compatible.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 19%" />
@@ -365,6 +369,9 @@ When enabling Timple, one of them is automatically registered with Matplotlib.
 <p>The only difference between these converters is the default formatter that is
 used. <cite>ConciseTimdeltaConverter</cite> will use the <cite>ConsciseTimedeltaFormatter</cite> by
 default while <cite>TimedeltaConverter</cite> will use <cite>AutoTimedeltaFormatter</cite>.</p>
+</div>
+<div class="section" id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="timple.timedelta.num2timedelta">
 <code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">num2timedelta</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#num2timedelta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.num2timedelta" title="Permalink to this definition">¶</a></dt>
@@ -403,7 +410,7 @@ be returned.</p>
 
 <dl class="py class">
 <dt id="timple.timedelta.TimedeltaFormatter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">TimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">TimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fmt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_offset_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.Formatter" title="(in Matplotlib v3.3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.ticker.Formatter</span></code></a></p>
 <p>Format a tick (in days) with a format string or using as custom
 <cite>.FuncFormatter</cite>.</p>
@@ -411,9 +418,9 @@ be returned.</p>
 Ticks can optionally be offset to generate shorter tick labels.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The format string for timedeltas works similar to a
-<cite>~datetime.datetime.strftime</cite> format string but they are NOT the
-same and NOT compatible.</p>
+<p>The format strings for timedeltas work similar to
+<cite>datetime.datetime.strftime</cite> format strings but they are <strong>not</strong> the
+same and <strong>not</strong> compatible.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>Example plot:</p>
@@ -444,10 +451,35 @@ same and NOT compatible.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Timedelta Formatter with Offset on Days&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="_images/timedelta_formatter_example.svg" src="_images/timedelta_formatter_example.svg" /><dl class="py method">
+<img alt="_images/timedelta_formatter_example.svg" src="_images/timedelta_formatter_example.svg" /><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fmt</strong> (<em>str</em><em> or </em><em>callable</em>) – a format string or a callable for formatting the tick values</p></li>
+<li><p><strong>offset_on</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>One of <code class="docutils literal notranslate"><span class="pre">('days',</span> <span class="pre">'hours',</span> <span class="pre">'minutes',</span> <span class="pre">'seconds')</span></code></p>
+<p>Specifies how to offset large values; default is no offset.
+If <code class="docutils literal notranslate"><span class="pre">offset_on</span></code> is set but <code class="docutils literal notranslate"><span class="pre">offset_fmt</span></code> is not, the offset will
+be applied but not shown.</p>
+</p></li>
+<li><p><strong>offset_fmt</strong> (<em>str</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – A format string or a callable for formatting the offset string.
+This also requires <code class="docutils literal notranslate"><span class="pre">offset_on</span></code> to be specified.</p></li>
+<li><p><strong>show_offset_zero</strong> (<em>bool</em><em>, </em><em>optional</em>) – Show axis offset if the offset is zero.</p></li>
+<li><p><strong>usetex</strong> (bool, default: <cite>text.usetex</cite> from Matplotlib’s rcParams) – To enable/disable the use of TeX’s math mode for rendering the
+results of the formatter.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="timple.timedelta.TimedeltaFormatter.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaFormatter.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaFormatter.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the format for tick value <em>x</em> at position pos.
+<code class="docutils literal notranslate"><span class="pre">pos=None</span></code> indicates an unspecified location.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="timple.timedelta.TimedeltaFormatter.get_offset">
 <code class="sig-name descname"><span class="pre">get_offset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaFormatter.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaFormatter.get_offset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the formatted axis offset string.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="timple.timedelta.TimedeltaFormatter.format_ticks">
@@ -459,7 +491,7 @@ same and NOT compatible.</p>
 
 <dl class="py class">
 <dt id="timple.timedelta.ConciseTimedeltaFormatter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">ConciseTimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">ConciseTimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_offset_zero</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.Formatter" title="(in Matplotlib v3.3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.ticker.Formatter</span></code></a></p>
 <p>A <cite>.Formatter</cite> which attempts to figure out the best format to use for the
 timedelta, and to make it as compact as possible, but still be complete.
@@ -481,7 +513,6 @@ offset position can be specified. Else, the defaults will be used.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>locator</strong> (<cite>.Locator</cite>) – Locator that the axis is using.</p></li>
 <li><p><strong>formats</strong> (<em>list of 5 strings</em><em>, </em><em>optional</em>) – <p>Format strings for tick labels.
-TODO: ref explanation of codes
 The default is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">ay&quot;</span><span class="p">,</span>
  <span class="s2">&quot;%H:00&quot;</span><span class="p">,</span>
@@ -508,11 +539,19 @@ The default is:</p>
 but don’t show it, set only the format string to None.</p>
 </p></li>
 <li><p><strong>show_offset</strong> (<em>bool</em><em>, </em><em>default: True</em>) – Whether to show the offset or not.</p></li>
+<li><p><strong>show_offset_zero</strong> (<em>bool</em><em>, </em><em>optional</em>) – Show axis offset if the offset is zero.</p></li>
 <li><p><strong>usetex</strong> (bool, default: <cite>text.usetex</cite> from Matplotlib’s rcParams) – To enable/disable the use of TeX’s math mode for rendering the results
 of the formatter.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="timple.timedelta.ConciseTimedeltaFormatter.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaFormatter.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaFormatter.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the format for tick value <em>x</em> at position pos.
+<code class="docutils literal notranslate"><span class="pre">pos=None</span></code> indicates an unspecified location.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="timple.timedelta.ConciseTimedeltaFormatter.format_ticks">
 <code class="sig-name descname"><span class="pre">format_ticks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaFormatter.format_ticks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaFormatter.format_ticks" title="Permalink to this definition">¶</a></dt>
@@ -522,13 +561,14 @@ of the formatter.</p></li>
 <dl class="py method">
 <dt id="timple.timedelta.ConciseTimedeltaFormatter.get_offset">
 <code class="sig-name descname"><span class="pre">get_offset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaFormatter.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaFormatter.get_offset" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the formatted axis offset string.</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt id="timple.timedelta.AutoTimedeltaFormatter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">AutoTimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%d</span> <span class="pre">%day,</span> <span class="pre">%h:%m'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#AutoTimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.AutoTimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">AutoTimedeltaFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultfmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'%d</span> <span class="pre">%day,</span> <span class="pre">%h:%m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usetex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#AutoTimedeltaFormatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.AutoTimedeltaFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://matplotlib.org/stable/api/ticker_api.html#matplotlib.ticker.Formatter" title="(in Matplotlib v3.3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.ticker.Formatter</span></code></a></p>
 <p>A <cite>.Formatter</cite> which attempts to figure out the best format to use. This
 is most useful when used with the <cite>AutoTimedeltaLocator</cite>.</p>
@@ -565,9 +605,26 @@ are greater than the unit returned by <code class="docutils literal notranslate"
 results of the formatter. If any entries in <code class="docutils literal notranslate"><span class="pre">self.scaled</span></code> are set
 as functions, then it is up to the customized function to enable or
 disable TeX’s math mode itself.</p></li>
+<li><p><strong>scaled</strong> (<em>dict</em><em>, </em><em>optional</em>) – Allows to overwrite the <cite>scaled</cite> instance attribute at creation.
+The default values are <strong>updated</strong> with the values of this argument.
+You can therefore only add or modify exisiting key-value pairs through
+this argument.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="timple.timedelta.AutoTimedeltaFormatter.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#AutoTimedeltaFormatter.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.AutoTimedeltaFormatter.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the format for tick value <em>x</em> at position pos.
+<code class="docutils literal notranslate"><span class="pre">pos=None</span></code> indicates an unspecified location.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="timple.timedelta.AutoTimedeltaFormatter.format_ticks">
+<code class="sig-name descname"><span class="pre">format_ticks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#AutoTimedeltaFormatter.format_ticks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.AutoTimedeltaFormatter.format_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the tick labels for all the ticks at once.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -635,6 +692,22 @@ if it is too close to being singular (i.e. a range of ~0).</p>
 <dd><p>Bases: <a class="reference internal" href="#timple.timedelta.TimedeltaLocator" title="timple.timedelta.TimedeltaLocator"><code class="xref py py-class docutils literal notranslate"><span class="pre">timple.timedelta.TimedeltaLocator</span></code></a></p>
 <p>This class automatically finds the best base unit and interval for setting
 view limits and tick locations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minticks</strong> (<em>int</em>) – The minimum number of ticks desired; controls whether ticks occur
+daily, hourly, etc.</p></li>
+<li><p><strong>maxticks</strong> (<em>dict</em><em> or </em><em>int</em>) – The maximum number of ticks desired; controls the interval between
+ticks (ticking every other, every 3, etc.).  For fine-grained
+control, this can be a dictionary mapping individual base units
+(‘days’, ‘hours’, etc.) to their own maximum
+number of ticks.  This can be used to keep the number of ticks
+appropriate to the format chosen in <cite>AutoDateFormatter</cite>. Any
+frequency not specified in this dictionary is given a default
+value.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt id="timple.timedelta.AutoTimedeltaLocator.intervald">
 <code class="sig-name descname"><span class="pre">intervald</span></code><a class="headerlink" href="#timple.timedelta.AutoTimedeltaLocator.intervald" title="Permalink to this definition">¶</a></dt>
@@ -670,6 +743,12 @@ keys. You should not add or delete entries.</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="timple.timedelta.AutoTimedeltaLocator.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#AutoTimedeltaLocator.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.AutoTimedeltaLocator.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the locations of the ticks.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -731,6 +810,20 @@ but more ticks than specified with min_ticks in init.</p>
 <span class="n">locator</span> <span class="o">=</span> <span class="n">TimedeltaLocatorManual</span><span class="p">(</span><span class="s1">&#39;seconds&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_unit</strong> (<em>{'days'</em><em>, </em><em>'hours'</em><em>, </em><em>'minutes'</em><em>, </em><em>'seconds'</em><em>, </em><em>'microseconds'}</em>) – </p></li>
+<li><p><strong>interval</strong> (<cite>int</cite> or <cite>float</cite>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="timple.timedelta.FixedTimedeltaLocator.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#FixedTimedeltaLocator.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.FixedTimedeltaLocator.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the locations of the ticks.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="timple.timedelta.FixedTimedeltaLocator.tick_values">
 <code class="sig-name descname"><span class="pre">tick_values</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#FixedTimedeltaLocator.tick_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.FixedTimedeltaLocator.tick_values" title="Permalink to this definition">¶</a></dt>
@@ -760,11 +853,17 @@ if it is too close to being singular (i.e. a range of ~0).</p>
 
 <dl class="py class">
 <dt id="timple.timedelta.TimedeltaConverter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">TimedeltaConverter</span></code><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaConverter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">TimedeltaConverter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaConverter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://matplotlib.org/stable/api/units_api.html#matplotlib.units.ConversionInterface" title="(in Matplotlib v3.3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.units.ConversionInterface</span></code></a></p>
 <p>Converter for <cite>datetime.timedelta</cite>, <cite>numpy.timedelta64</cite> and
 <cite>pandas.Timedelta</cite> data.</p>
 <p>The ‘unit’ tag for such data is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>formatter_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dictionary of keyword arguments which are passed on to
+<a class="reference internal" href="#timple.timedelta.AutoTimedeltaFormatter" title="timple.timedelta.AutoTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter</span></code></a> instances.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="timple.timedelta.TimedeltaConverter.axisinfo">
 <code class="sig-name descname"><span class="pre">axisinfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#TimedeltaConverter.axisinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.TimedeltaConverter.axisinfo" title="Permalink to this definition">¶</a></dt>
@@ -784,11 +883,17 @@ with <cite>timedelta2num</cite>.</p>
 
 <dl class="py class">
 <dt id="timple.timedelta.ConciseTimedeltaConverter">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">ConciseTimedeltaConverter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_formats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaConverter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.timedelta.</span></code><code class="sig-name descname"><span class="pre">ConciseTimedeltaConverter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaConverter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#timple.timedelta.TimedeltaConverter" title="timple.timedelta.TimedeltaConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">timple.timedelta.TimedeltaConverter</span></code></a></p>
 <p>Converter for <cite>datetime.timedelta</cite>, <cite>numpy.timedelta64</cite> and
 <cite>pandas.Timedelta</cite> data (prefers short tick formats).</p>
 <p>The ‘unit’ tag for such data is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>formatter_args</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dictionary of keyword arguments which are passed on to
+<a class="reference internal" href="#timple.timedelta.ConciseTimedeltaFormatter" title="timple.timedelta.ConciseTimedeltaFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter</span></code></a> instances.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt id="timple.timedelta.ConciseTimedeltaConverter.axisinfo">
 <code class="sig-name descname"><span class="pre">axisinfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/timedelta.html#ConciseTimedeltaConverter.axisinfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.timedelta.ConciseTimedeltaConverter.axisinfo" title="Permalink to this definition">¶</a></dt>

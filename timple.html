@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Basic Usage &mdash; Timple 0.1.0 documentation</title>
+  <title>Basic Usage &mdash; Timple 0.1.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.1.0
+                0.1.1
               </div>
             
           
@@ -97,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="timedelta.html#timedelta-formatters">Timedelta formatters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timedelta.html#timedelta-format-strings">Timedelta format strings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timedelta.html#timedelta-converters">Timedelta converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timedelta.html#api-reference">API Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -202,7 +203,7 @@ functionality so that pandas’ NaT datatype is treated like a NaN value. This
 means that NaT values are then simply skipped when plotting.</p>
 <dl class="py class">
 <dt id="timple.core.Timple">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.core.</span></code><code class="sig-name descname"><span class="pre">Timple</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/core.html#Timple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.core.Timple" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">timple.core.</span></code><code class="sig-name descname"><span class="pre">Timple</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">formatter_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timple/core.html#Timple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timple.core.Timple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The <a class="reference internal" href="#timple.core.Timple" title="timple.core.Timple"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timple</span></code></a> class is the most important part of this module.
 It will always be your starting point. It is very simple and its only

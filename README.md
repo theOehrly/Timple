@@ -4,6 +4,11 @@ Timple offers extended functionality for plotting timedelta values with
 Matplotlib.
 
 
+## Installation
+Installation via pip is recommended:
+``pip install timple``
+
+
 ##  Overview
 
 Matplotlib generally supports plotting of timedelta values but only as 

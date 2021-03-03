@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>timple.core &mdash; Timple 0.1.1-alpha documentation</title>
+  <title>timple.core &mdash; Timple 0.1.2-alpha documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                0.1.1-alpha
+                0.1.2-alpha
               </div>
             
           
@@ -281,6 +281,9 @@
         <span class="n">revert_converters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_converters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_formatter_args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_revert_funcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revert_converters</span><span class="p">)</span>
 
+        <span class="n">revert_registry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_patch_registry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_revert_funcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revert_registry</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">pd_nat_dates_support</span><span class="p">:</span>
             <span class="n">revert_date2num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_patch_date2num</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_revert_funcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revert_date2num</span><span class="p">)</span></div>
@@ -335,6 +338,21 @@
 
         <span class="k">def</span> <span class="nf">revert</span><span class="p">():</span>
             <span class="n">munits</span><span class="o">.</span><span class="n">_is_natively_supported</span> <span class="o">=</span> <span class="n">orig_func</span>
+
+        <span class="k">return</span> <span class="n">revert</span>
+
+    <span class="k">def</span> <span class="nf">_patch_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># patch matplotlib.units.registry.get_converter</span>
+        <span class="c1"># mainly necessary for special case whr e first element of an array</span>
+        <span class="c1"># is pandas.NaT (pandas.NaT is always an instance of datetime.datetime</span>
+        <span class="c1"># and therefore not representative of the arrays datatype</span>
+        <span class="n">orig_func</span> <span class="o">=</span> <span class="n">munits</span><span class="o">.</span><span class="n">Registry</span><span class="o">.</span><span class="n">get_converter</span>
+
+        <span class="n">patched</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">get_patched_registry</span><span class="p">(</span><span class="n">mpl</span><span class="p">)</span>
+        <span class="n">munits</span><span class="o">.</span><span class="n">Registry</span><span class="o">.</span><span class="n">get_converter</span> <span class="o">=</span> <span class="n">patched</span>
+
+        <span class="k">def</span> <span class="nf">revert</span><span class="p">():</span>
+            <span class="n">munits</span><span class="o">.</span><span class="n">Registry</span><span class="o">.</span><span class="n">get_converter</span> <span class="o">=</span> <span class="n">orig_func</span>
 
         <span class="k">return</span> <span class="n">revert</span>
 

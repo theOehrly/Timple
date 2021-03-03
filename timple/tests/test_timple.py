@@ -371,3 +371,55 @@ def test_auto_modified_intervald():
                 '3 days, 3:00:00']
     # auto would usually be using longer intervals for 2 days
     assert list(map(str, mdates.num2timedelta(locator()))) == expected
+
+
+def test_auto_convert_w_formatter_args():
+    from timple.timedelta import TimedeltaConverter, HOURS_PER_DAY
+    import datetime
+
+    td0 = datetime.timedelta(days=0)
+    td1 = datetime.timedelta(days=1)
+
+    # verify default first
+    conv = TimedeltaConverter()
+    axinfo = conv.axisinfo(None, None)
+    fmt = axinfo.majfmt
+    # call locator with a reasonable range to select the correct frequency
+    axinfo.majloc.get_locator(td0, td1)
+    assert fmt(1/24*3) == "0 days, 03:00"
+
+    # customize 'scaled' with keyword argument
+    scaled_update = {1/HOURS_PER_DAY: "%H:%m"}
+    conv = TimedeltaConverter(formatter_args={'scaled': scaled_update})
+    axinfo = conv.axisinfo(None, None)
+    fmt = axinfo.majfmt
+    # call locator with a reasonable range to select the correct frequency
+    axinfo.majloc.get_locator(td0, td1)
+    assert fmt(1/24*3) == "3:00"
+
+
+def test_concise_convert_w_formatter_args():
+    from timple.timedelta import ConciseTimedeltaConverter
+
+    td0 = datetime.timedelta(days=0)
+    td1 = datetime.timedelta(days=1)
+
+    # verify default first
+    conv = ConciseTimedeltaConverter()
+    axinfo = conv.axisinfo(None, None)
+    fmt = axinfo.majfmt
+    # call locator with a reasonable range to select the correct frequency
+    axinfo.majloc.get_locator(td0, td1)
+    assert fmt(1/24*3) == "3:00"
+    assert fmt.get_offset() == "0 days"
+
+    # change 'show_offset_zero' to False and modify tick format strings
+    fmt_strings = ["%d %day", "%H:00:00", "%H:%m", "%M:%s.0", "%S.%ms%us"]
+    conv = ConciseTimedeltaConverter(formatter_args={'show_offset_zero': False,
+                                                     'formats': fmt_strings})
+    axinfo = conv.axisinfo(None, None)
+    fmt = axinfo.majfmt
+    # call locator with a reasonable range to select the correct frequency
+    axinfo.majloc.get_locator(td0, td1)
+    assert fmt(1/24*3) == "3:00:00"
+    assert fmt.get_offset() == ""

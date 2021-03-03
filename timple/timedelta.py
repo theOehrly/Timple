@@ -474,6 +474,7 @@ class TimedeltaFormatter(ticker.Formatter):
                             'formatter.'.format(self))
 
     def get_offset(self):
+        """Return the formatted axis offset string."""
         return self.offset_string
 
     def _offset_values(self, values):
@@ -654,10 +655,12 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
                         mpl.rcParams['text.usetex'])
 
     def __call__(self, x, pos=None):
+        # docstring inherited
         # temporarily wrap x in a list and format with self.format_ticks
         return self.format_ticks([x, ])[0]
 
     def format_ticks(self, values):
+        # docstring inherited
         try:
             locator_unit_scale = float(self._locator._get_unit())
         except AttributeError:
@@ -679,6 +682,7 @@ class ConciseTimedeltaFormatter(ticker.Formatter):
         return labels
 
     def get_offset(self):
+        """Return the formatted axis offset string."""
         return self.offset_str
 
 
@@ -758,10 +762,12 @@ class AutoTimedeltaFormatter(ticker.Formatter):
         self._locator = locator
 
     def __call__(self, x, pos=None):
+        # docstring inherited
         # temporarily wrap x in a list and format with self.format_ticks
         return self.format_ticks([x, ])[0]
 
     def format_ticks(self, values):
+        # docstring inherited
         try:
             locator_unit_scale = float(self._locator._get_unit())
         except AttributeError:
@@ -954,6 +960,22 @@ class AutoTimedeltaLocator(TimedeltaLocator):
     This class automatically finds the best base unit and interval for setting
     view limits and tick locations.
 
+    Parameters
+    ----------
+        minticks : int
+            The minimum number of ticks desired; controls whether ticks occur
+            daily, hourly, etc.
+        maxticks : dict or int
+            The maximum number of ticks desired; controls the interval between
+            ticks (ticking every other, every 3, etc.).  For fine-grained
+            control, this can be a dictionary mapping individual base units
+            ('days', 'hours', etc.) to their own maximum
+            number of ticks.  This can be used to keep the number of ticks
+            appropriate to the format chosen in `AutoDateFormatter`. Any
+            frequency not specified in this dictionary is given a default
+            value.
+
+
     Attributes
     ----------
     intervald : dict
@@ -987,21 +1009,6 @@ class AutoTimedeltaLocator(TimedeltaLocator):
 
         For forcing ticks in one specific interval only,
         :class:`FixedTimedeltaLocator` might be preferred.
-
-    Parameters
-    ----------
-        minticks : int
-            The minimum number of ticks desired; controls whether ticks occur
-            daily, hourly, etc.
-        maxticks : dict or int
-            The maximum number of ticks desired; controls the interval between
-            ticks (ticking every other, every 3, etc.).  For fine-grained
-            control, this can be a dictionary mapping individual base units
-            ('days', 'hours', etc.) to their own maximum
-            number of ticks.  This can be used to keep the number of ticks
-            appropriate to the format chosen in `AutoDateFormatter`. Any
-            frequency not specified in this dictionary is given a default
-            value.
     """
     def __init__(self, minticks=5, maxticks=None):
         super().__init__()

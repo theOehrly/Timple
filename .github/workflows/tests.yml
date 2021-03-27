@@ -157,7 +157,7 @@ jobs:
           # Install dependencies from PyPI.
           python3 -m pip install --upgrade \
             cycler kiwisolver numpy pillow pyparsing python-dateutil \
-            -r matplotlib-${{ steps.version.outputs.current }}/requirements/testing/travis_all.txt
+            -r matplotlib-${{ steps.version.outputs.current }}/requirements/testing/all.txt
 
           # Install optional dependencies from PyPI.
           # Sphinx is needed to run sphinxext tests

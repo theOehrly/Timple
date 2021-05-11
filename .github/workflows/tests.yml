@@ -31,7 +31,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: mpl_version_last_run.txt
-          key: version-cache
+          key: version-cache-${{ hashFiles('mpl_version_last_run.txt') }}
+          restore-keys: |
+            version-cache-
 
       # check which is the newest matplotlib release version number
       # determine whether to actually run tests depending on current and last release number

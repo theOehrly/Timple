@@ -22,7 +22,7 @@ jobs:
   # Check for new matplotlib releases and run tests if a new release is available
   run-test:
     # The type of runner that the job will run on
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
 
     steps:
       # cached version file is used to remember the matplotlib release version

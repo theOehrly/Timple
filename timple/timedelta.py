@@ -177,6 +177,7 @@ API Reference
 import datetime
 import string
 import math
+import re
 
 import numpy as np
 
@@ -188,8 +189,13 @@ try:
     from matplotlib.dates import _wrap_in_tex
 except ImportError:
     def _wrap_in_tex(text):
+        p = r'([a-zA-Z]+)'
+        ret_text = re.sub(p, r'}$\1$\\mathdefault{', text)
+
         # Braces ensure dashes are not spaced like binary operators.
-        return '$\\mathdefault{' + text.replace('-', '{-}') + '}$'
+        ret_text = '$\\mathdefault{' + ret_text.replace('-', '{-}') + '}$'
+        ret_text = ret_text.replace('$\\mathdefault{}$', '')
+        return ret_text
 
 __all__ = ('num2timedelta', 'timedelta2num',
            'TimedeltaFormatter', 'ConciseTimedeltaFormatter',

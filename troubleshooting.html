@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Search &mdash; Timple 0.1.4 documentation</title>
+  <title>Troubleshooting steps &mdash; Timple 0.1.4 documentation</title>
   
 
   
@@ -23,7 +23,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -37,10 +36,9 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Formatters, locators and converters" href="timedelta.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -71,7 +69,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -90,7 +88,7 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="timple.html">Basic Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timedelta.html">Formatters, locators and converters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="timedelta.html#timple-timedelta-format">Timple timedelta format</a></li>
@@ -101,9 +99,9 @@
 <li class="toctree-l2"><a class="reference internal" href="timedelta.html#api-reference">API Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting steps</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#changing-the-matplotlib-style-causes-the-view-limits-to-be-set-incorrectly">Changing the matplotlib style causes the view limits to be set incorrectly</a></li>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#pytest-mpl-produces-weird-output-images-where-view-limits-are-set-incorrectly">pytest-mpl produces weird output images where view limits are set incorrectly</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting steps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changing-the-matplotlib-style-causes-the-view-limits-to-be-set-incorrectly">Changing the matplotlib style causes the view limits to be set incorrectly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pytest-mpl-produces-weird-output-images-where-view-limits-are-set-incorrectly">pytest-mpl produces weird output images where view limits are set incorrectly</a></li>
 </ul>
 </li>
 </ul>
@@ -154,10 +152,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Troubleshooting steps</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -169,23 +171,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="troubleshooting-steps">
+<h1>Troubleshooting steps<a class="headerlink" href="#troubleshooting-steps" title="Permalink to this headline">¶</a></h1>
+<p>This is a collection of errors that may be encountered.</p>
+<div class="section" id="changing-the-matplotlib-style-causes-the-view-limits-to-be-set-incorrectly">
+<span id="changing-the-matplotlib-style"></span><h2>Changing the matplotlib style causes the view limits to be set incorrectly<a class="headerlink" href="#changing-the-matplotlib-style-causes-the-view-limits-to-be-set-incorrectly" title="Permalink to this headline">¶</a></h2>
+<p>Styles modify Matplotlib’s rcParams. Some styles may set
+<code class="docutils literal notranslate"><span class="pre">'axes.autolimit_mode':</span> <span class="pre">'round_numbers'</span></code>.
+Timple represents timedelta as floating point numbers where one day
+is represented as <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.
+This means, that if this option is set, the smallest difference between the upper
+and lower bound for the view limit can be 1 day. For small timedelta values this
+may look like autoscaling is no longer working properly.</p>
+<p>One example of a style that sets this option is matplotlib’s ‘classic’ style.</p>
+<dl class="simple">
+<dt>Workaround:</dt><dd><p>Make sure to not use a style that sets this option or make sure
+to explicitly unset it after enabling that style.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="pytest-mpl-produces-weird-output-images-where-view-limits-are-set-incorrectly">
+<h2>pytest-mpl produces weird output images where view limits are set incorrectly<a class="headerlink" href="#pytest-mpl-produces-weird-output-images-where-view-limits-are-set-incorrectly" title="Permalink to this headline">¶</a></h2>
+<p>pytest-mpl by default uses the matplotlib ‘classic’ style.
+See <a class="reference internal" href="#changing-the-matplotlib-style">Changing the Matplotlib style</a></p>
+<dl class="simple">
+<dt>Workaround:</dt><dd><p>Make sure to always explicitly set a working style for pytest-mpl.
+Recommended style: <code class="docutils literal notranslate"><span class="pre">'default'</span></code>
+See the pytest-mpl documentation for that.</p>
+</dd>
+</dl>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="timedelta.html" class="btn btn-neutral float-left" title="Formatters, locators and converters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 
@@ -222,14 +247,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

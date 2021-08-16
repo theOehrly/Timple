@@ -37,6 +37,8 @@ See :func:`timple.core.Timple.enable` on how to enable this.
    timple
    timedelta
 
+   troubleshooting
+
 
 Indices and tables
 ==================

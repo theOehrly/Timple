@@ -38,6 +38,8 @@ def test_enable_disable():
 
 def test_mpl_default_functionality():
     # run this test in a subprocess to ensure a clean state
+    # NOTE: the matplotlib tests require a local development/editable
+    # matplotlib installation form sources!
     ret = subprocess.call(
         'python -c '
         '"'

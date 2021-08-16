@@ -1,3 +1,5 @@
+
+import re
 import datetime
 import numpy as np
 import pytest
@@ -111,7 +113,8 @@ def test_timedelta_formatter_usetex():
         verify(lbl)
 
     # assert offset is tex formatted
-    verify(formatter.get_offset())
+    assert re.match(r"\$\\mathdefault\{[\d ]+\}\$days",
+                    formatter.get_offset())
 
 
 def test_concise_timedelta_formatter():

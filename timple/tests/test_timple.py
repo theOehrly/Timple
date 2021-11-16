@@ -113,7 +113,7 @@ def test_timedelta_formatter_usetex():
         verify(lbl)
 
     # assert offset is tex formatted
-    assert re.match(r"\$\\mathdefault\{[\d ]+\}\$days",
+    assert re.match(r"\$\\mathdefault\{[\d ]+(\\;)?\}\$days",
                     formatter.get_offset())
 
 

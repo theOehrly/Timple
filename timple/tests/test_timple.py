@@ -279,8 +279,8 @@ def test_auto_timedelta_locator():
     def _create_auto_timedelta_locator(delta1, delta2):
         locator = tmpldelta.AutoTimedeltaLocator()
         locator.create_dummy_axis()
-        locator.set_view_interval(tmpldelta.timedelta2num(delta1),
-                                  tmpldelta.timedelta2num(delta2))
+        locator.axis.set_view_interval(tmpldelta.timedelta2num(delta1),
+                                       tmpldelta.timedelta2num(delta2))
         return locator
 
     dt1 = datetime.timedelta(days=100)
@@ -355,7 +355,7 @@ def test_fixed_timedelta_locator():
         dt1 = dt0 + datetime.timedelta(days=tdelta)
         locator = tmpldelta.FixedTimedeltaLocator(base, interval)
         locator.create_dummy_axis()
-        locator.set_view_interval(*tmpldelta.timedelta2num([dt0, dt1]))
+        locator.axis.set_view_interval(*tmpldelta.timedelta2num([dt0, dt1]))
         assert list(map(str, mdates.num2timedelta(locator()))) == expected
 
 
@@ -368,8 +368,8 @@ def test_auto_modified_intervald():
     locator.create_dummy_axis()
     dt1 = datetime.timedelta(days=1)
     dt2 = datetime.timedelta(days=3)
-    locator.set_view_interval(tmpldelta.timedelta2num(dt1),
-                              tmpldelta.timedelta2num(dt2))
+    locator.axis.set_view_interval(tmpldelta.timedelta2num(dt1),
+                                   tmpldelta.timedelta2num(dt2))
     expected = ['21:00:00', '1 day, 0:00:00', '1 day, 3:00:00',
                 '1 day, 6:00:00', '1 day, 9:00:00', '1 day, 12:00:00',
                 '1 day, 15:00:00', '1 day, 18:00:00', '1 day, 21:00:00',

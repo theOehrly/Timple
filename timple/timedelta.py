@@ -869,8 +869,8 @@ class TimedeltaLocator(ticker.MultipleLocator):
         locator.set_axis(self.axis)
 
         if self.axis is not None:
-            locator.set_view_interval(*self.axis.get_view_interval())
-            locator.set_data_interval(*self.axis.get_data_interval())
+            self.axis.set_view_interval(*self.axis.get_view_interval())
+            self.axis.set_data_interval(*self.axis.get_data_interval())
 
         return locator
 

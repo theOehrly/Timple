@@ -22,7 +22,7 @@ jobs:
   # Check for new matplotlib releases and run tests if a new release is available
   run-test:
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
       # cached version file is used to remember the matplotlib release version
@@ -33,7 +33,7 @@ jobs:
           path: mpl_version_last_run.txt
           key: version-cache-${{ hashFiles('mpl_version_last_run.txt') }}
           restore-keys: |
-            version-cache-
+            version-cache
 
       # check which is the newest matplotlib release version number
       # determine whether to actually run tests depending on current and last release number
@@ -45,7 +45,7 @@ jobs:
           # create a url for downloading the sources for that version.
           # Read last runs version from a cached file if available. Set to 'unknown' otherwise.
           # Set these as this steps outputs so they can be reused later.
-
+          apt-get update -yy && apt-get install -yy curl
           CURRENT_MPL_VERSION=$(curl -s https://api.github.com/repos/matplotlib/matplotlib/releases/latest \
           | grep "tag_name" \
           | awk '{print substr($2, 3, length($2)-4)}')
@@ -84,9 +84,9 @@ jobs:
 
       - name: Setup python
         if: steps.version.outputs.run == 'yes'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.8' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          python-version: 3.9 # Version range or exact version of a Python version to use, using SemVer's version range syntax
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
@@ -102,6 +102,7 @@ jobs:
               cm-super \
               dvipng \
               ffmpeg \
+              fonts-noto-cjk \
               gdb \
               gir1.2-gtk-3.0 \
               graphviz \
@@ -131,7 +132,8 @@ jobs:
               texlive-latex-recommended \
               texlive-luatex \
               texlive-xetex \
-              ttf-wqy-zenhei
+              ttf-wqy-zenhei \
+              libopengl0
 
       - name: Cache pip
         if: steps.version.outputs.run == 'yes'
@@ -142,12 +144,10 @@ jobs:
           restore-keys: |
             pip-cache
 
-      - name: Download latest released sources for matplotlib
+      - name: Clone latest released sources for matplotlib
         if: steps.version.outputs.run == 'yes'
         run: |
-          curl -L -o matplotlib.tar.gz ${{ steps.version.outputs.location }}
-          tar -xf matplotlib.tar.gz
-          rm matplotlib.tar.gz
+          git clone --depth 1 --branch v${{ steps.version.outputs.current }} https://github.com/matplotlib/matplotlib.git
 
       - name: Install Python dependencies
         if: steps.version.outputs.run == 'yes'
@@ -158,12 +158,14 @@ jobs:
 
           # Install dependencies from PyPI.
           python3 -m pip install --upgrade \
-            cycler kiwisolver numpy pillow pyparsing python-dateutil \
-            -r matplotlib-${{ steps.version.outputs.current }}/requirements/testing/all.txt
+            'contourpy>=1.0.1' cycler fonttools kiwisolver numpy packaging \
+            pillow pyparsing python-dateutil setuptools-scm \
+            -r matplotlib/requirements/testing/all.txt \
+            -r matplotlib/requirements/testing/extra.txt
 
           # Install optional dependencies from PyPI.
           # Sphinx is needed to run sphinxext tests
-          python3 -mpip install --upgrade sphinx
+          python3 -m pip install --upgrade sphinx
 
           # GUI toolkits are pip-installable only for some versions of Python
           # so don't fail if we can't install them.  Make it easier to check
@@ -171,8 +173,29 @@ jobs:
           # (sometimes, the install appears to be successful but shared
           # libraries cannot be loaded at runtime, so an actual import is a
           # better check).
+          # PyGObject, pycairo, and cariocffi do not install on OSX 10.12.
+           python -m pip install --upgrade pycairo 'cairocffi>=0.8' PyGObject &&
+             python -c 'import gi; gi.require_version("Gtk", "3.0"); from gi.repository import Gtk' &&
+             echo 'PyGObject is available' ||
+             echo 'PyGObject is not available'
+
+          python -mpip install --upgrade pyqt5 &&
+            python -c 'import PyQt5.QtCore' &&
+            echo 'PyQt5 is available' ||
+            echo 'PyQt5 is not available'
+
+          python -mpip install --upgrade pyqt6 &&
+            python -c 'import PyQt6.QtCore' &&
+            echo 'PyQt6 is available' ||
+            echo 'PyQt6 is not available'
+
+          python -mpip install --upgrade pyside6 &&
+            python -c 'import PySide6.QtCore' &&
+            echo 'PySide6 is available' ||
+            echo 'PySide6 is not available'
+
           python3 -m pip install --upgrade \
-            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 \
+            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 \
             wxPython &&
             python -c 'import wx' &&
             echo 'wxPython is available' ||
@@ -181,8 +204,8 @@ jobs:
       - name: Install matplotlib from sources
         if: steps.version.outputs.run == 'yes'
         run: |
-          cd matplotlib-${{ steps.version.outputs.current }}
-          python3 -m pip install --no-deps -e .
+          cd matplotlib
+          python3 -m pip install --no-deps -ve .
 
       - name: Run Timple Tests
         if: steps.version.outputs.run == 'yes'

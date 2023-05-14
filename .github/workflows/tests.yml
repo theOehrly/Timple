@@ -115,6 +115,7 @@ jobs:
               libgirepository1.0-dev \
               libsdl2-2.0-0 \
               libxkbcommon-x11-0 \
+              libxcb-cursor0 \
               libxcb-icccm4 \
               libxcb-image0 \
               libxcb-keysyms1 \
@@ -158,15 +159,15 @@ jobs:
 
           # Install dependencies from PyPI.
           python3 -m pip install --upgrade \
-            'contourpy>=1.0.1' cycler fonttools kiwisolver numpy packaging \
-            pillow pyparsing python-dateutil setuptools-scm \
+            'contourpy>=1.0.1' cycler fonttools kiwisolver importlib_resources \
+            numpy packaging pillow pyparsing python-dateutil setuptools-scm \
             -r matplotlib/requirements/testing/all.txt \
             -r matplotlib/requirements/testing/extra.txt
 
           # Install optional dependencies from PyPI.
           # Sphinx is needed to run sphinxext tests
-          python3 -m pip install --upgrade sphinx
-
+          python3 -m pip install --upgrade sphinx!=6.1.2
+          
           # GUI toolkits are pip-installable only for some versions of Python
           # so don't fail if we can't install them.  Make it easier to check
           # whether the install was successful by trying to import the toolkit
@@ -174,11 +175,15 @@ jobs:
           # libraries cannot be loaded at runtime, so an actual import is a
           # better check).
           # PyGObject, pycairo, and cariocffi do not install on OSX 10.12.
-           python -m pip install --upgrade pycairo 'cairocffi>=0.8' PyGObject &&
-             python -c 'import gi; gi.require_version("Gtk", "3.0"); from gi.repository import Gtk' &&
-             echo 'PyGObject is available' ||
-             echo 'PyGObject is not available'
+          python -m pip install --upgrade pycairo 'cairocffi>=0.8' PyGObject &&
+            python -c 'import gi; gi.require_version("Gtk", "3.0"); from gi.repository import Gtk' &&
+            echo 'PyGObject is available' ||
+            echo 'PyGObject is not available'
 
+          # There are no functioning wheels available for OSX 10.12 (as of
+          # Sept 2020) for either pyqt5 (there are only wheels for 10.13+) or
+          # pyside2 (the latest version (5.13.2) with 10.12 wheels has a
+          # fatal to us bug, it was fixed in 5.14.0 which has 10.13 wheels)
           python -mpip install --upgrade pyqt5 &&
             python -c 'import PyQt5.QtCore' &&
             echo 'PyQt5 is available' ||
@@ -194,8 +199,8 @@ jobs:
             echo 'PySide6 is available' ||
             echo 'PySide6 is not available'
 
-          python3 -m pip install --upgrade \
-            -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 \
+          python -mpip install --upgrade \
+            -f "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04" \
             wxPython &&
             python -c 'import wx' &&
             echo 'wxPython is available' ||
@@ -205,7 +210,15 @@ jobs:
         if: steps.version.outputs.run == 'yes'
         run: |
           cd matplotlib
-          python3 -m pip install --no-deps -ve .
+          
+          cat <<EOT >> mplsetup.cfg
+          [rc_options]
+          backend=Agg
+          EOT
+
+          cat mplsetup.cfg
+          
+          python -m pip install --no-deps -ve .
 
       - name: Run Timple Tests
         if: steps.version.outputs.run == 'yes'

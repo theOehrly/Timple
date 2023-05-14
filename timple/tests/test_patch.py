@@ -87,7 +87,8 @@ def test_td2num_pandas_nat(pd):
     test_case = [pd.Timestamp('1970-01-03'), pd.NaT]
     expected = [2.0, np.nan]
 
-    with pytest.raises(ValueError):
+    with pytest.raises((ValueError, TypeError)):
+        # raises ValueError or TypeError depending on the version of mpl
         np.testing.assert_equal(mdates.date2num(test_case), expected)
 
     tmpl.enable(pd_nat_dates_support=True)

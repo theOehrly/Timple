@@ -50,14 +50,17 @@ def test_mpl_default_functionality():
 
 
 def _subprocess_matplotlib_subtests():
+    import os
     import matplotlib as mpl
     import timple
     tmpl = timple.Timple()
     tmpl.enable(pd_nat_dates_support=True)
+
+    mpl_path = os.path.dirname(mpl.__file__)
     # to be run in a subprocess
     ret = 0
-    ret += mpl.test(verbosity=1, argv=['matplotlib.tests.test_dates']).value
-    ret += mpl.test(verbosity=1, argv=['matplotlib.tests.test_units']).value
+    ret += pytest.main(['-x', mpl_path, 'matplotlib.tests.test_dates'])
+    ret += pytest.main(['-x', mpl_path, 'matplotlib.tests.test_units'])
     if ret != 0:
         sys.exit(1)
 

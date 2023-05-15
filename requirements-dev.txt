@@ -3,7 +3,7 @@ pytest-flake8
 pandas
 numpy
 matplotlib
-sphinx
+sphinx<5.0
 sphinx_rtd_theme
 setuptools
 wheel

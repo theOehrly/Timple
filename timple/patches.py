@@ -49,7 +49,8 @@ def get_patched_date2num(mpl):
             # replace all 'min int' values with the string 'nat' and convert
             # the array to the dtype of the first non-nat value
             values = np.asarray([x.to_numpy() for x in d], dtype='object')
-            nat_mask = (np.iinfo('int64').min == values)
+            nat_mask = (np.iinfo('int64').min
+                        == values.astype('datetime64[ns]').astype('int64'))
             if not all(nat_mask):
                 _dtype = d[~nat_mask].take(0).to_numpy().dtype
             else:

@@ -36,6 +36,8 @@ def get_patched_date2num(mpl):
         if not iterable:
             d = [d]
 
+        masked = np.ma.is_masked(d)
+        mask = np.ma.getmask(d)
         d = np.asarray(d)
         if not d.size:
             # deals with an empty array...
@@ -68,6 +70,7 @@ def get_patched_date2num(mpl):
                 d = np.asarray(d)
             d = d.astype('datetime64[us]')
 
+        d = np.ma.masked_array(d, mask=mask) if masked else d
         d = mpl.dates._dt64_to_ordinalf(d)
 
         return d if iterable else d[0]

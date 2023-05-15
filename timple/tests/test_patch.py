@@ -57,10 +57,13 @@ def _subprocess_matplotlib_subtests():
     tmpl.enable(pd_nat_dates_support=True)
 
     mpl_path = os.path.dirname(mpl.__file__)
+    test_units_path = os.path.normpath(os.path.join(mpl_path, 'tests/test_units.py'))
+    test_dates_path = os.path.normpath(os.path.join(mpl_path, 'tests/test_dates.py'))
+
     # to be run in a subprocess
     ret = 0
-    ret += pytest.main(['-x', mpl_path, 'matplotlib.tests.test_dates'])
-    ret += pytest.main(['-x', mpl_path, 'matplotlib.tests.test_units'])
+    ret += pytest.main([test_units_path])
+    ret += pytest.main([test_dates_path])
     if ret != 0:
         sys.exit(1)
 

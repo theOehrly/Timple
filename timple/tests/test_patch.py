@@ -1,8 +1,11 @@
 import pytest
-import numpy as np
+
 import datetime
-import sys
 import subprocess
+import sys
+
+import numpy as np
+import pandas as pd
 
 
 # NOTE:
@@ -99,3 +102,42 @@ def test_td2num_pandas_nat(pd):
 
     tmpl.enable(pd_nat_dates_support=True)
     np.testing.assert_equal(mdates.date2num(test_case), expected)
+
+
+@pytest.mark.parametrize(
+    'test_case', [
+        [pd.Timedelta(1, 's'), pd.Timedelta(2, 's')],
+        pd.Series([pd.Timedelta(1, 's'), pd.Timedelta(2, 's')]),
+        np.array([pd.Timedelta(1, 's'), pd.Timedelta(2, 's')])
+    ]
+)
+def test_patched_converter(test_case):
+    import timple
+    import matplotlib.units as munits
+
+    tmpl = timple.Timple()
+    tmpl.enable()
+
+    registry = munits.Registry()
+    converter = registry.get_converter(test_case)
+
+    assert converter is None  # no converter for timedelta required
+
+
+@pytest.mark.parametrize(
+    'test_case', [
+        [pd.Timedelta(1, 's'), pd.Timedelta(2, 's')],
+        pd.Series([pd.Timedelta(1, 's'), pd.Timedelta(2, 's')]),
+        np.array([pd.Timedelta(1, 's'), pd.Timedelta(2, 's')])
+    ]
+)
+def test_patched_is_natively_supported(test_case):
+    import timple
+    import matplotlib.units as munits
+
+    tmpl = timple.Timple()
+    tmpl.enable()
+
+    result = munits._is_natively_supported(test_case)
+
+    assert result is False  # timedelta is not supported by matplotlib

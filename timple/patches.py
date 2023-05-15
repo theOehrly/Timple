@@ -97,11 +97,13 @@ def get_patched_is_natively_supported(mpl):
 
             try:
                 if hasattr(x[0], 'value'):
+                    if isinstance(x, (list, tuple)):
+                        x = np.asarray(x)
                     # pandas nat is defined as the minimum value of int64,
                     # remove all values which are equal to min int
                     values = np.asarray([elem.value for elem in x],
-                                        dtype='object')
-                    mask = (np.iinfo('int64').min == values)
+                                        dtype='timedelta64[ns]')
+                    mask = (np.iinfo('int64').min == values.astype('int64'))
                     x = x[~mask]
             except IndexError:
                 pass
@@ -117,10 +119,13 @@ def get_patched_registry(mpl):
     def get_converter(self, x):
         try:
             if np.iterable(x) and hasattr(x[0], 'value'):
+                if isinstance(x, (list, tuple)):
+                    x = np.asarray(x)
                 # pandas nat is defined as the minimum value of int64,
                 # remove all values which are equal to min int
-                values = np.asarray([elem.value for elem in x], dtype='object')
-                mask = (np.iinfo('int64').min == values)
+                values = np.asarray([elem.value for elem in x],
+                                    dtype='timedelta64[ns]')
+                mask = (np.iinfo('int64').min == values.astype('int64'))
                 x = x[~mask]
         except IndexError:
             pass

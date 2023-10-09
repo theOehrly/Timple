@@ -1,94 +1,53 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>timple.timedelta &mdash; Timple 0.1.5-alpha documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>timple.timedelta &mdash; Timple 0.1.6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> Timple
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            Timple
           </a>
-
-          
-            
-            
               <div class="version">
-                0.1.5-alpha
+                0.1.6
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../timple.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timple.html#timple.core.Timple"><code class="docutils literal notranslate"><span class="pre">Timple</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timple.html#timple.core.Timple.enable"><code class="docutils literal notranslate"><span class="pre">Timple.enable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timple.html#timple.core.Timple.disable"><code class="docutils literal notranslate"><span class="pre">Timple.disable()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../timedelta.html">Formatters, locators and converters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple-timedelta-format">Timple timedelta format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timedelta-tickers">Timedelta tickers</a></li>
@@ -98,6 +57,56 @@
 <li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#api-reference">API Reference</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.num2timedelta"><code class="docutils literal notranslate"><span class="pre">num2timedelta()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.timedelta2num"><code class="docutils literal notranslate"><span class="pre">timedelta2num()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter"><code class="docutils literal notranslate"><span class="pre">TimedeltaFormatter</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.__call__"><code class="docutils literal notranslate"><span class="pre">TimedeltaFormatter.__call__()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.get_offset"><code class="docutils literal notranslate"><span class="pre">TimedeltaFormatter.get_offset()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.format_ticks"><code class="docutils literal notranslate"><span class="pre">TimedeltaFormatter.format_ticks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.__call__"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter.__call__()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.format_ticks"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter.format_ticks()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.get_offset"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaFormatter.get_offset()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaFormatter"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaFormatter.__call__"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter.__call__()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaFormatter.format_ticks"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaFormatter.format_ticks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.base_units"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator.base_units</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.base_factors"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator.base_factors</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.datalim_to_td"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator.datalim_to_td()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.viewlim_to_td"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator.viewlim_to_td()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.nonsingular"><code class="docutils literal notranslate"><span class="pre">TimedeltaLocator.nonsingular()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.intervald"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator.intervald</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.__call__"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator.__call__()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.tick_values"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator.tick_values()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.nonsingular"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator.nonsingular()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.get_locator"><code class="docutils literal notranslate"><span class="pre">AutoTimedeltaLocator.get_locator()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator"><code class="docutils literal notranslate"><span class="pre">FixedTimedeltaLocator</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator.__call__"><code class="docutils literal notranslate"><span class="pre">FixedTimedeltaLocator.__call__()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator.tick_values"><code class="docutils literal notranslate"><span class="pre">FixedTimedeltaLocator.tick_values()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator.nonsingular"><code class="docutils literal notranslate"><span class="pre">FixedTimedeltaLocator.nonsingular()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaConverter"><code class="docutils literal notranslate"><span class="pre">TimedeltaConverter</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.axisinfo"><code class="docutils literal notranslate"><span class="pre">TimedeltaConverter.axisinfo()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.convert"><code class="docutils literal notranslate"><span class="pre">TimedeltaConverter.convert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaConverter"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaConverter</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaConverter.axisinfo"><code class="docutils literal notranslate"><span class="pre">ConciseTimedeltaConverter.axisinfo()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting steps</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#changing-the-matplotlib-style-causes-the-view-limits-to-be-set-incorrectly">Changing the matplotlib style causes the view limits to be set incorrectly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../troubleshooting.html#pytest-mpl-produces-weird-output-images-where-view-limits-are-set-incorrectly">pytest-mpl produces weird output images where view limits are set incorrectly</a></li>
@@ -105,69 +114,30 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Timple</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>timple.timedelta</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">timple.timedelta</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for timple.timedelta</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. currentmodule:: timple.timedelta</span>
@@ -391,7 +361,7 @@
 
 
 <span class="k">def</span> <span class="nf">_td64_to_ordinalf</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert `numpy.timedelta64` or an ndarray of those types to a number of</span>
 <span class="sd">    days as float. Roundoff is float64 precision. Practically: microseconds</span>
 <span class="sd">    for up to 292271 years, milliseconds for larger time spans.</span>
@@ -417,7 +387,7 @@
 
 
 <div class="viewcode-block" id="timedelta2num"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.timedelta2num">[docs]</a><span class="k">def</span> <span class="nf">timedelta2num</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert timedelta objects to Timple&#39;s timedeltas.</span>
 
 <span class="sd">    Parameters</span>
@@ -471,7 +441,7 @@
 
 
 <div class="viewcode-block" id="num2timedelta"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.num2timedelta">[docs]</a><span class="k">def</span> <span class="nf">num2timedelta</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert number of days to a `~datetime.timedelta` object.</span>
 
 <span class="sd">    If *x* is a sequence, a sequence of `~datetime.timedelta` objects will</span>
@@ -495,7 +465,7 @@
 
 
 <span class="k">def</span> <span class="nf">strftimedelta</span><span class="p">(</span><span class="n">td</span><span class="p">,</span> <span class="n">fmt_str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a string representing a timedelta, controlled by an explicit</span>
 <span class="sd">    format string.</span>
 
@@ -540,7 +510,7 @@
 
 
 <span class="k">def</span> <span class="nf">strftdnum</span><span class="p">(</span><span class="n">td_num</span><span class="p">,</span> <span class="n">fmt_str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a string representing a float based timedelta,</span>
 <span class="sd">    controlled by an explicit format string.</span>
 
@@ -556,7 +526,7 @@
 
 
 <div class="viewcode-block" id="TimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Format a tick (in days) with a format string or using as custom</span>
 <span class="sd">    `.FuncFormatter`.</span>
 
@@ -644,14 +614,14 @@
         <span class="c1"># format a single tick value</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">strftdnum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1"> as string &#39;</span>
                             <span class="s1">&#39;formatter.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
 <div class="viewcode-block" id="TimedeltaFormatter.get_offset"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaFormatter.get_offset">[docs]</a>    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the formatted axis offset string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the formatted axis offset string.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span></div>
 
     <span class="k">def</span> <span class="nf">_offset_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -707,7 +677,7 @@
             <span class="c1"># zero or if zero offset are set to be shown</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">offset_str</span> <span class="o">=</span> <span class="n">strftdnum</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">):</span>
                 <span class="n">offset_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_fmt</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1"> as offset &#39;</span>
@@ -725,7 +695,7 @@
 
 
 <div class="viewcode-block" id="ConciseTimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">ConciseTimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `.Formatter` which attempts to figure out the best format to use for the</span>
 <span class="sd">    timedelta, and to make it as compact as possible, but still be complete.</span>
 <span class="sd">    This is most useful when used with the `AutoTimedeltaLocator`::</span>
@@ -859,12 +829,12 @@
         <span class="k">return</span> <span class="n">labels</span></div>
 
 <div class="viewcode-block" id="ConciseTimedeltaFormatter.get_offset"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaFormatter.get_offset">[docs]</a>    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the formatted axis offset string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the formatted axis offset string.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_str</span></div></div>
 
 
 <div class="viewcode-block" id="AutoTimedeltaFormatter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaFormatter">[docs]</a><span class="k">class</span> <span class="nc">AutoTimedeltaFormatter</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A `.Formatter` which attempts to figure out the best format to use. This</span>
 <span class="sd">    is most useful when used with the `AutoTimedeltaLocator`.</span>
 
@@ -957,7 +927,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">_formatter</span> <span class="o">=</span> <span class="n">TimedeltaFormatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">_formatter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">fmt</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -966,7 +936,7 @@
 
 
 <div class="viewcode-block" id="TimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaLocator</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">MultipleLocator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines the tick locations when plotting timedeltas.</span>
 
 <span class="sd">    This class is subclassed by other Locators and</span>
@@ -1006,7 +976,7 @@
                            <span class="s1">&#39;microseconds&#39;</span><span class="p">]</span>  <span class="c1"># mind docstring for fixed locator</span>
 
 <div class="viewcode-block" id="TimedeltaLocator.datalim_to_td"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.datalim_to_td">[docs]</a>    <span class="k">def</span> <span class="nf">datalim_to_td</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert axis data interval to timedelta objects.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert axis data interval to timedelta objects.&quot;&quot;&quot;</span>
         <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_data_interval</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tmin</span> <span class="o">&gt;</span> <span class="n">tmax</span><span class="p">:</span>
             <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span>
@@ -1014,14 +984,14 @@
         <span class="k">return</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmin</span><span class="p">),</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmax</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TimedeltaLocator.viewlim_to_td"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.viewlim_to_td">[docs]</a>    <span class="k">def</span> <span class="nf">viewlim_to_td</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Convert the view interval to timedelta objects.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the view interval to timedelta objects.&quot;&quot;&quot;</span>
         <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">tmin</span> <span class="o">&gt;</span> <span class="n">tmax</span><span class="p">:</span>
             <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span>
         <span class="k">return</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmin</span><span class="p">),</span> <span class="n">num2timedelta</span><span class="p">(</span><span class="n">tmax</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_create_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an instance of :class:`ticker.MultipleLocator` using base unit</span>
 <span class="sd">        and interval</span>
 
@@ -1046,20 +1016,20 @@
         <span class="k">return</span> <span class="n">locator</span>
 
     <span class="k">def</span> <span class="nf">_get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return how many days a unit of the locator is; used for</span>
 <span class="sd">        intelligent autoscaling.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_get_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the number of units for each tick.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="TimedeltaLocator.nonsingular"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaLocator.nonsingular">[docs]</a>    <span class="k">def</span> <span class="nf">nonsingular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Given the proposed upper and lower extent, adjust the range</span>
 <span class="sd">        if it is too close to being singular (i.e. a range of ~0).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1078,7 +1048,7 @@
 
 
 <div class="viewcode-block" id="FixedTimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.FixedTimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">FixedTimedeltaLocator</span><span class="p">(</span><span class="n">TimedeltaLocator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make ticks in an interval of the base unit.</span>
 
 <span class="sd">    Examples::</span>
@@ -1133,7 +1103,7 @@
 
 
 <div class="viewcode-block" id="AutoTimedeltaLocator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator">[docs]</a><span class="k">class</span> <span class="nc">AutoTimedeltaLocator</span><span class="p">(</span><span class="n">TimedeltaLocator</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class automatically finds the best base unit and interval for setting</span>
 <span class="sd">    view limits and tick locations.</span>
 
@@ -1241,7 +1211,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span>
 
 <div class="viewcode-block" id="AutoTimedeltaLocator.get_locator"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.AutoTimedeltaLocator.get_locator">[docs]</a>    <span class="k">def</span> <span class="nf">get_locator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the best locator based on the given limits.</span>
 
 <span class="sd">        This will choose the settings for a</span>
@@ -1298,7 +1268,7 @@
 
 
 <div class="viewcode-block" id="TimedeltaConverter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter">[docs]</a><span class="k">class</span> <span class="nc">TimedeltaConverter</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">ConversionInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converter for `datetime.timedelta`, `numpy.timedelta64` and</span>
 <span class="sd">    `pandas.Timedelta` data.</span>
 
@@ -1320,7 +1290,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">formatter_args</span> <span class="o">=</span> <span class="n">formatter_args</span>
 
 <div class="viewcode-block" id="TimedeltaConverter.axisinfo"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.axisinfo">[docs]</a>    <span class="k">def</span> <span class="nf">axisinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the `~matplotlib.units.AxisInfo`.</span>
 
 <span class="sd">        The *unit* and *axis* arguments are required but not used.</span>
@@ -1335,7 +1305,7 @@
 
 <div class="viewcode-block" id="TimedeltaConverter.convert"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.TimedeltaConverter.convert">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If *value* is not already a number or sequence of numbers, convert it</span>
 <span class="sd">        with `timedelta2num`.</span>
 
@@ -1345,7 +1315,7 @@
 
 
 <div class="viewcode-block" id="ConciseTimedeltaConverter"><a class="viewcode-back" href="../../timedelta.html#timple.timedelta.ConciseTimedeltaConverter">[docs]</a><span class="k">class</span> <span class="nc">ConciseTimedeltaConverter</span><span class="p">(</span><span class="n">TimedeltaConverter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converter for `datetime.timedelta`, `numpy.timedelta64` and</span>
 <span class="sd">    `pandas.Timedelta` data (prefers short tick formats).</span>
 
@@ -1377,46 +1347,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, theOehrly.
-
-    </p>
+    <p>&#169; Copyright 2023, theOehrly.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

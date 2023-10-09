@@ -87,6 +87,8 @@ def get_patched_is_natively_supported(mpl):
     def is_natively_supported(x, *args, **kwargs):
         # returns false if x is a timedelta
         # calls matplotlib's native function for all other dtypes
+        x = mpl.cbook._unpack_to_numpy(x)
+
         patch_types = (datetime.timedelta, np.timedelta64)
         if isinstance(x, patch_types):
             return False
@@ -117,6 +119,8 @@ def get_patched_registry(mpl):
     mpl_native = mpl.units.Registry.get_converter
 
     def get_converter(self, x):
+        x = mpl.cbook._unpack_to_numpy(x)
+
         try:
             if np.iterable(x) and hasattr(x[0], 'value'):
                 if isinstance(x, (list, tuple)):

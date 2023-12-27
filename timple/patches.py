@@ -2,6 +2,25 @@ import numpy as np
 import datetime
 
 
+def _unpack_to_numpy_fallback(x):
+    """Internal helper to extract data from e.g. pandas and xarray objects."""
+    # copied from mpl source as a fallback for compatibility with versions
+    # of mpl that didn't have this function yet
+    if isinstance(x, np.ndarray):
+        # If numpy, return directly
+        return x
+    if hasattr(x, 'to_numpy'):
+        # Assume that any to_numpy() method actually returns a numpy array
+        return x.to_numpy()
+    if hasattr(x, 'values'):
+        xtmp = x.values
+        # For example a dict has a 'values' attribute, but it is not a property
+        # so in this case we do not want to return a function
+        if isinstance(xtmp, np.ndarray):
+            return xtmp
+    return x
+
+
 def get_patched_date2num(mpl):
     """Returns a patched version of `matplotlib.dates.date2num`"""
     def date2num(d):
@@ -83,11 +102,13 @@ def get_patched_is_natively_supported(mpl):
     """Returns a patched version of
     `matplotlib.units._is_natively_supported`"""
     mpl_native = mpl.units._is_natively_supported
+    _unpack_to_numpy = getattr(mpl.cbook, '_unpack_to_numpy',
+                               _unpack_to_numpy_fallback)
 
     def is_natively_supported(x, *args, **kwargs):
         # returns false if x is a timedelta
         # calls matplotlib's native function for all other dtypes
-        x = mpl.cbook._unpack_to_numpy(x)
+        x = _unpack_to_numpy(x)
 
         patch_types = (datetime.timedelta, np.timedelta64)
         if isinstance(x, patch_types):
@@ -117,9 +138,11 @@ def get_patched_is_natively_supported(mpl):
 
 def get_patched_registry(mpl):
     mpl_native = mpl.units.Registry.get_converter
+    _unpack_to_numpy = getattr(mpl.cbook, '_unpack_to_numpy',
+                               _unpack_to_numpy_fallback)
 
     def get_converter(self, x):
-        x = mpl.cbook._unpack_to_numpy(x)
+        x = _unpack_to_numpy(x)
 
         try:
             if np.iterable(x) and hasattr(x[0], 'value'):

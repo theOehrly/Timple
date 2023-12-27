@@ -11,6 +11,11 @@ on:
   # run on push, manual dispatch and on a schedule
   # when run on schedule, tests will only be run if a new matplotlib release was found
   workflow_dispatch:
+    inputs:
+      ignore-mpl-version:
+        type: boolean
+        required: true
+        description: Run independent of current and last tested Matplotlib version
   push:
     branches-ignore:
       - gh-pages
@@ -25,13 +30,34 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+      - name: Get current stable Matplotlib version
+        id: mpl-sources
+        run: |
+          # Find out what's the latest version number of matplotlib and
+          # create a url for downloading the sources for that version.
+          # Read last runs version from a cached file if available. Set to 'unknown' otherwise.
+          # Set these as this steps outputs so they can be reused later.
+          sudo apt-get update -yy && sudo apt-get install -yy curl
+          CURRENT_MPL_VERSION=$(curl -s https://api.github.com/repos/matplotlib/matplotlib/releases/latest \
+          | grep "tag_name" \
+          | awk '{print substr($2, 3, length($2)-4)}')
+
+          MPL_LOCATION=$"https://github.com/matplotlib/matplotlib/archive/v$CURRENT_MPL_VERSION.tar.gz"
+          
+          echo "current=$CURRENT_MPL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "location=$MPL_LOCATION" >> "$GITHUB_OUTPUT"
+
+
       # cached version file is used to remember the matplotlib release version
       # number from the last run
       - name: Cache version from last run
         uses: actions/cache@v3
         with:
           path: mpl_version_last_run.txt
-          key: version-cache-${{ hashFiles('mpl_version_last_run.txt') }}
+          # ensure that the primary key is different on every run by including ids that are unique for each run
+          # this ensures that the cache is always updated because there is no hit on the primary key
+          # we do only know if the cache needs to be updated after restoring the cache and looking at its content, therefore, just always update
+          key: version-cache-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             version-cache
 
@@ -41,46 +67,50 @@ jobs:
       - name: Version Check
         id: version
         run: |
-          # Find out what's the latest version number of matplotlib and
-          # create a url for downloading the sources for that version.
-          # Read last runs version from a cached file if available. Set to 'unknown' otherwise.
-          # Set these as this steps outputs so they can be reused later.
-          apt-get update -yy && apt-get install -yy curl
-          CURRENT_MPL_VERSION=$(curl -s https://api.github.com/repos/matplotlib/matplotlib/releases/latest \
-          | grep "tag_name" \
-          | awk '{print substr($2, 3, length($2)-4)}')
-
-          MPL_LOCATION=$"https://github.com/matplotlib/matplotlib/archive/v$CURRENT_MPL_VERSION.tar.gz"
-
           if test -f "mpl_version_last_run.txt"
           then
             LAST_MPL_VERSION=$(<mpl_version_last_run.txt)
           else
             LAST_MPL_VERSION="unknown"
           fi
+          
+          if [ -z ${{ inputs.ignore-mpl-version }} ]
+          then
+            IGNORE_MPL_VERSION='unset'
+          else
+            IGNORE_MPL_VERSION=${{ inputs.ignore-mpl-version }}
+          fi
 
           echo "Event that triggered this run: ${{ github.event_name }}"
-          echo "The current matplotlib version is $CURRENT_MPL_VERSION"
-          echo "URL for sources: $MPL_LOCATION"
+          echo "Manual override to force running independent of versions is $IGNORE_MPL_VERSION"
+          echo "The current matplotlib version is ${{ steps.mpl-sources.outputs.current }}"
+          echo "URL for sources: ${{ steps.mpl-sources.outputs.location }}"
           echo "The matplotlib version on the last run was $LAST_MPL_VERSION"
           echo ""
-
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" || \
-                "${{ github.event_name }}" == "push" ||
-                ( "${{ github.event_name }}" == "schedule" && "$LAST_MPL_VERSION" != "$CURRENT_MPL_VERSION" ) \
-             ]];
+          
+          if [[ "${{ github.event_name }}" == "schedule" ]] && [[ "$LAST_MPL_VERSION" != "${{ steps.mpl-sources.outputs.current }}" ]]
           then
-            echo "Tests will be run! Continuing..."
+            echo "Scheduled run, versions differ, tests will be run! Continuing..."
+            RUN_TESTS="yes"
+          elif [[ "${{ github.event_name }}" == "push" ]]
+          then
+            echo "Triggered by push, assume sources changed, tests will be run! Continuing..."
+            RUN_TESTS="yes"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ "$LAST_MPL_VERSION" != "${{ steps.mpl-sources.outputs.current }}" ]]
+          then
+            echo "Manual run, versions differ, tests will be run! Continuing..."
+            RUN_TESTS="yes"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]] && [[ $IGNORE_MPL_VERSION == 'true' ]]
+          then
+            echo "Manual run, version comparison overridden, tests will be run! Continuing..."
             RUN_TESTS="yes"
           else
             echo "Tests will not be run! Exiting..."
             RUN_TESTS="no"
           fi
 
-          echo ::set-output name=current::$CURRENT_MPL_VERSION
-          echo ::set-output name=location::$MPL_LOCATION
-          echo ::set-output name=last::$LAST_MPL_VERSION
-          echo ::set-output name=run::$RUN_TESTS
+          echo "last=$LAST_MPL_VERSION" >> "$GITHUB_OUTPUT"
+          echo "run=$RUN_TESTS" >> "$GITHUB_OUTPUT"
 
       - name: Setup python
         if: steps.version.outputs.run == 'yes'
@@ -141,14 +171,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: pip-cache-${{ hashFiles('requirements/*/*.txt') }}
+          key: pip-cache-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             pip-cache
 
       - name: Clone latest released sources for matplotlib
         if: steps.version.outputs.run == 'yes'
         run: |
-          git clone --depth 1 --branch v${{ steps.version.outputs.current }} https://github.com/matplotlib/matplotlib.git
+          git clone --depth 1 --branch v${{ steps.mpl-sources.outputs.current }} https://github.com/matplotlib/matplotlib.git
 
       - name: Install Python dependencies
         if: steps.version.outputs.run == 'yes'
@@ -229,4 +259,4 @@ jobs:
       - name: Update mpl version cache file
         if: steps.version.outputs.run == 'yes'
         run: |
-          echo "${{ steps.version.outputs.current }}" > mpl_version_last_run.txt
+          echo "${{ steps.mpl-sources.outputs.current }}" > mpl_version_last_run.txt

@@ -22,13 +22,13 @@ jobs:
   # Check for new matplotlib releases and run tests if a new release is available
   run-test:
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       # cached version file is used to remember the matplotlib release version
       # number from the last run
       - name: Cache version from last run
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: mpl_version_last_run.txt
           key: version-cache-${{ hashFiles('mpl_version_last_run.txt') }}
@@ -91,7 +91,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repo
         if: steps.version.outputs.run == 'yes'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install OS dependencies
         if: steps.version.outputs.run == 'yes'
@@ -138,7 +138,7 @@ jobs:
 
       - name: Cache pip
         if: steps.version.outputs.run == 'yes'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: pip-cache-${{ hashFiles('requirements/*/*.txt') }}
